@@ -1,0 +1,7 @@
+<resources>
+    
+    <string name="app_name">Sherizi</string>
+    
+    <!-- GCM -->
+    <string name="gcm_project_id">772047009587</string>
+</resources>

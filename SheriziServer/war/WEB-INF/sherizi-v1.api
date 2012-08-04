@@ -1,0 +1,159 @@
+{
+  "extends" : "thirdParty.api",
+  "abstract" : false,
+  "root" : "https://dz-sherizi.appspot.com/_ah/api",
+  "name" : "sherizi",
+  "version" : "v1",
+  "description" : "",
+  "defaultVersion" : false,
+  "adapter" : {
+    "bns" : "http://dz-sherizi.appspot.com/_ah/spi",
+    "deadline" : 10.0,
+    "type" : "lily"
+  },
+  "auth" : {
+    "allowCookieAuth" : false
+  },
+  "frontendLimits" : {
+    "unregisteredUserQps" : -1,
+    "unregisteredQps" : -1,
+    "unregisteredDaily" : -1,
+    "rules" : [ ]
+  },
+  "cacheControl" : {
+    "type" : "no-cache",
+    "maxAge" : 0
+  },
+  "methods" : {
+    "sherizi.saveOrUpdateUser" : {
+      "path" : "saveOrUpdateUser",
+      "httpMethod" : "POST",
+      "rosyMethod" : "SheriziRemote.saveOrUpdateUser",
+      "request" : {
+        "parameters" : {
+        },
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "sherizi.deleteUser" : {
+      "path" : "user/{id}",
+      "httpMethod" : "DELETE",
+      "rosyMethod" : "SheriziRemote.deleteUser",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "required" : true,
+            "type" : "string"
+          }
+        },
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "sherizi.searchFriends" : {
+      "path" : "searchFriends/{googleAccounts}",
+      "httpMethod" : "POST",
+      "rosyMethod" : "SheriziRemote.searchFriends",
+      "request" : {
+        "parameters" : {
+          "googleAccounts" : {
+            "required" : true,
+            "type" : "string"
+          }
+        },
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "sherizi.initiateTransfer" : {
+      "path" : "initiateTransfer/{idFrom}/{idTo}/{transferMode}",
+      "httpMethod" : "POST",
+      "rosyMethod" : "SheriziRemote.initiateTransfer",
+      "request" : {
+        "parameters" : {
+          "idFrom" : {
+            "required" : true,
+            "type" : "string"
+          },
+          "idTo" : {
+            "required" : true,
+            "type" : "string"
+          },
+          "transferMode" : {
+            "required" : true,
+            "type" : "string"
+          }
+        },
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "empty"
+      }
+    }
+  },
+  "descriptor" : {
+    "schemas" : {
+      "User" : {
+        "id" : "User",
+        "type" : "object",
+        "properties" : {
+          "googleAccount" : {
+            "type" : "string"
+          },
+          "registrationID" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Users" : {
+        "id" : "Users",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "User"
+            }
+          }
+        }
+      }
+    },
+    "methods" : {
+      "SheriziRemote.saveOrUpdateUser" : {
+        "request" : {
+          "$ref" : "User"
+        },
+        "response" : {
+          "$ref" : "User"
+        }
+      },
+      "SheriziRemote.deleteUser" : {
+        "response" : {
+          "$ref" : "User"
+        }
+      },
+      "SheriziRemote.searchFriends" : {
+        "response" : {
+          "type" : "object",
+          "$ref" : "Users"
+        }
+      },
+      "SheriziRemote.initiateTransfer" : {
+        "response" : {
+          "$ref" : "empty"
+        }
+      }
+    }
+  }
+}

@@ -1,24 +1,24 @@
 package fr.dz.sherizi.push;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import android.content.Context;
 import android.content.Intent;
 
-import com.appspot.api.services.sherizi.Sherizi;
-import com.appspot.api.services.sherizi.Sherizi.Builder;
 import com.appspot.api.services.sherizi.model.User;
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
-import com.google.api.client.extensions.android2.AndroidHttp;
-import com.google.api.client.googleapis.services.GoogleClient;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.json.JsonHttpRequest;
-import com.google.api.client.http.json.JsonHttpRequestInitializer;
-import com.google.api.client.json.jackson.JacksonFactory;
 
 import fr.dz.sherizi.common.push.PushMessage;
+import fr.dz.sherizi.push.receiver.NotificationReceiver;
+import fr.dz.sherizi.service.contact.ContactService;
+import fr.dz.sherizi.service.contact.Email;
+import fr.dz.sherizi.service.server.SheriziServerService;
 import fr.dz.sherizi.utils.Constants;
 import fr.dz.sherizi.utils.Utils;
 
@@ -27,7 +27,18 @@ import fr.dz.sherizi.utils.Utils;
  */
 public class PushService extends GCMBaseIntentService {
 
-	private final Sherizi sheriziServer;
+	// The push message receivers
+	private static final List<PushMessageReceiver> RECEIVERS_LIST = Arrays.asList(
+			(PushMessageReceiver) new NotificationReceiver()
+		);
+	private static final Map<String,PushMessageReceiver> RECEIVERS_MAP = createPushMessageReceivers();
+	private static Map<String,PushMessageReceiver> createPushMessageReceivers() {
+		Map<String,PushMessageReceiver> result = new HashMap<String,PushMessageReceiver>();
+		for ( PushMessageReceiver receiver : RECEIVERS_LIST ) {
+			result.put(receiver.getAcceptedMessageType(), receiver);
+		}
+		return result;
+	}
 
 	/**
 	 * Default constructor :
@@ -36,13 +47,6 @@ public class PushService extends GCMBaseIntentService {
 	 */
 	public PushService() {
 		super(Constants.PROJECT_ID);
-		Builder endpointBuilder = new Sherizi.Builder (
-			AndroidHttp.newCompatibleTransport(), new JacksonFactory(),
-			new HttpRequestInitializer() {
-				public void initialize(HttpRequest httpRequest) {
-				}
-			});
-		this.sheriziServer = updateBuilder(endpointBuilder).build();
 	}
 
 	/**
@@ -61,9 +65,12 @@ public class PushService extends GCMBaseIntentService {
 	 */
 	@Override
 	public void onMessage(Context context, Intent intent) {
-		// TODO Create an interface for MessageTreaters => the type give the object to use for treatment
 		PushMessage message = PushMessage.valueOf(intent.getStringExtra("message"));
-		Utils.showMessage(context, message.getParameter("message"));
+		if ( RECEIVERS_MAP.containsKey(message.getType()) ) {
+			RECEIVERS_MAP.get(message.getType()).onMessage(context, message);
+		} else {
+			// TODO Show a warning or log something
+		}
 	}
 
 	/**
@@ -73,10 +80,16 @@ public class PushService extends GCMBaseIntentService {
 	@Override
 	public void onRegistered(Context context, String registrationId) {
 		try {
-			User user = new User()
-				.setRegistrationID(registrationId)
-				.setGoogleAccount(Utils.getGoogleAccount(context));
-			sheriziServer.saveOrUpdateUser(user).execute();
+			// Adds a user for each email address
+			Set<Email> emails = ContactService.getInstance().getConnectedUserEmails(context);
+			String deviceName = Utils.getDeviceName(context);
+			for ( Email email : emails ) {
+				User user = new User()
+					.setRegistrationID(registrationId)
+					.setEmail(email.getEmail())
+					.setDeviceName(deviceName);
+				SheriziServerService.getInstance().saveOrUpdateUser(user).execute();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -89,7 +102,11 @@ public class PushService extends GCMBaseIntentService {
 	@Override
 	protected void onUnregistered(Context context, String registrationId) {
 		try {
-			sheriziServer.deleteUser(registrationId).execute();
+			Set<Email> emails = ContactService.getInstance().getConnectedUserEmails(context);
+			String deviceName = Utils.getDeviceName(context);
+			for ( Email email : emails ) {
+				SheriziServerService.getInstance().deleteUser(email.getEmail(), deviceName).execute();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -107,25 +124,5 @@ public class PushService extends GCMBaseIntentService {
 		//if (regId.equals("")) {
 			GCMRegistrar.register(context, Constants.PROJECT_ID);
 		//}
-	}
-
-	/**
-	 * Updates the Google client builder to connect the appropriate server based
-	 * on whether LOCAL_ANDROID_RUN is true or false.
-	 * @param builder Google client builder
-	 * @return same Google client builder
-	 */
-	protected static <B extends GoogleClient.Builder> B updateBuilder(B builder) {
-		if (Constants.LOCAL_ANDROID_RUN) {
-			builder.setRootUrl(Constants.LOCAL_APP_ENGINE_SERVER_URL + "/_ah/api/");
-		}
-		// only enable GZip when connecting to remote server
-		final boolean enableGZip = builder.getRootUrl().startsWith("https:");
-		builder.setJsonHttpRequestInitializer(new JsonHttpRequestInitializer() {
-			public void initialize(JsonHttpRequest jsonHttpRequest) {
-				jsonHttpRequest.setEnableGZipContent(enableGZip);
-			}
-		});
-		return builder;
 	}
 }

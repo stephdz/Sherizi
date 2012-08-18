@@ -6,8 +6,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import fr.dz.sherizi.common.exception.SheriziException;
 import fr.dz.sherizi.common.push.PushMessage;
-import fr.dz.sherizi.server.exception.SheriziException;
 import fr.dz.sherizi.server.push.PushUtils;
 
 /**

@@ -6,8 +6,8 @@ import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
 
+import fr.dz.sherizi.common.exception.SheriziException;
 import fr.dz.sherizi.common.push.PushMessage;
-import fr.dz.sherizi.server.exception.SheriziException;
 import fr.dz.sherizi.server.model.User;
 import fr.dz.sherizi.server.service.SheriziLocal;
 import fr.dz.sherizi.server.service.SheriziRemote;
@@ -41,14 +41,14 @@ public class PushUtils {
 			if (result.getMessageId() != null) {
 				String canonicalRegId = result.getCanonicalRegistrationId();
 				if (canonicalRegId != null) {
-					remote.deleteUser(user.getRegistrationID());
+					remote.deleteUser(user.getEmail(), user.getDeviceName());
 					user.setRegistrationID(canonicalRegId);
 					remote.saveOrUpdateUser(user);
 				}
 			} else {
 				String error = result.getErrorCodeName();
 				if ( error.equals(com.google.android.gcm.server.Constants.ERROR_NOT_REGISTERED) ) {
-					remote.deleteUser(user.getRegistrationID());
+					remote.deleteUser(user.getEmail(), user.getDeviceName());
 				}
 			}
 

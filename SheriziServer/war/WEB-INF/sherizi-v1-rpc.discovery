@@ -59,12 +59,43 @@
   }
  },
  "schemas": {
+  "Key": {
+   "id": "Key",
+   "type": "object",
+   "properties": {
+    "complete": {
+     "type": "boolean"
+    },
+    "id": {
+     "type": "string",
+     "format": "int64"
+    },
+    "kind": {
+     "type": "string"
+    },
+    "name": {
+     "type": "string"
+    },
+    "namespace": {
+     "type": "string"
+    },
+    "parent": {
+     "$ref": "Key"
+    }
+   }
+  },
   "User": {
    "id": "User",
    "type": "object",
    "properties": {
-    "googleAccount": {
+    "deviceName": {
      "type": "string"
+    },
+    "email": {
+     "type": "string"
+    },
+    "id": {
+     "$ref": "Key"
     },
     "registrationID": {
      "type": "string"
@@ -88,13 +119,18 @@
   "sherizi.deleteUser": {
    "id": "sherizi.deleteUser",
    "parameters": {
-    "id": {
+    "deviceName": {
+     "type": "string",
+     "required": true
+    },
+    "email": {
      "type": "string",
      "required": true
     }
    },
    "parameterOrder": [
-    "id"
+    "email",
+    "deviceName"
    ],
    "returns": {
     "$ref": "User"
@@ -103,11 +139,19 @@
   "sherizi.initiateTransfer": {
    "id": "sherizi.initiateTransfer",
    "parameters": {
-    "idFrom": {
+    "deviceFrom": {
      "type": "string",
      "required": true
     },
-    "idTo": {
+    "deviceTo": {
+     "type": "string",
+     "required": true
+    },
+    "emailFrom": {
+     "type": "string",
+     "required": true
+    },
+    "emailTo": {
      "type": "string",
      "required": true
     },
@@ -117,8 +161,10 @@
     }
    },
    "parameterOrder": [
-    "idFrom",
-    "idTo",
+    "emailFrom",
+    "deviceFrom",
+    "emailTo",
+    "deviceTo",
     "transferMode"
    ]
   },
@@ -139,13 +185,13 @@
   "sherizi.searchFriends": {
    "id": "sherizi.searchFriends",
    "parameters": {
-    "googleAccounts": {
+    "emails": {
      "type": "string",
      "required": true
     }
    },
    "parameterOrder": [
-    "googleAccounts"
+    "emails"
    ],
    "returns": {
     "$ref": "Users"

@@ -2,7 +2,7 @@ package fr.dz.sherizi.server.service.version;
 
 import java.util.List;
 
-import fr.dz.sherizi.server.exception.SheriziException;
+import fr.dz.sherizi.common.exception.SheriziException;
 import fr.dz.sherizi.server.model.User;
 
 /**
@@ -22,24 +22,27 @@ public interface SheriziV1 {
 
 	/**
 	 * Deletes the user from the datastore
-	 * @param id
+	 * @param email
+	 * @param deviceName
 	 * @return
 	 */
-	public User deleteUser(String id) throws SheriziException;
+	public User deleteUser(String email, String deviceName) throws SheriziException;
 
 	/**
-	 * Searches for users within a list of google accounts
-	 * @param googleAccounts The comma separated searched google accounts
+	 * Searches for users within a list of emails
+	 * @param googleAccounts The comma separated searched emails
 	 * @return
 	 */
-	public List<User> searchFriends(String googleAccounts) throws SheriziException;
+	public List<User> searchFriends(String emails) throws SheriziException;
 
 	/**
 	 * Initiates the transfer between 2 users using the specified transfer mode
-	 * @param idFrom
-	 * @param idTo
+	 * @param emailFrom
+	 * @param deviceFrom
+	 * @param emailTo
+	 * @param deviceTo
 	 * @param transferMode
 	 */
-	public void initiateTransfer(String idFrom, String idTo, String transferMode)
+	public void initiateTransfer(String emailFrom, String deviceFrom, String emailTo, String deviceTo, String transferMode)
 		throws SheriziException;
 }

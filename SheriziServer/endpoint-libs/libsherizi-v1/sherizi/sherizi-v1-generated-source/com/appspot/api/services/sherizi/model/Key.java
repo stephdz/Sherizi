@@ -21,7 +21,7 @@ import com.google.api.client.json.GenericJson;
 
 
 /**
- * Model definition for User.
+ * Model definition for Key.
  *
  * <p> This is the Java data model class that specifies how to parse/serialize into the JSON that is
  * transmitted over HTTP when working with the . For a detailed explanation see:
@@ -30,22 +30,14 @@ import com.google.api.client.json.GenericJson;
  *
  * @author Google, Inc.
  */
-public final class User extends GenericJson {
+public final class Key extends GenericJson {
 
 
   /**
    * The value may be {@code null}.
    */
   @com.google.api.client.util.Key
-  private String deviceName;
-
-
-
-  /**
-   * The value may be {@code null}.
-   */
-  @com.google.api.client.util.Key
-  private String registrationID;
+  private String kind;
 
 
 
@@ -53,7 +45,7 @@ public final class User extends GenericJson {
    * The value may be {@code null}.
    */
   @com.google.api.client.util.Key
-  private String email;
+  private Boolean complete;
 
 
 
@@ -61,7 +53,31 @@ public final class User extends GenericJson {
    * The value may be {@code null}.
    */
   @com.google.api.client.util.Key
-  private Key id;
+  private Key parent;
+
+
+
+  /**
+   * The value may be {@code null}.
+   */
+  @com.google.api.client.util.Key
+  private String namespace;
+
+
+
+  /**
+   * The value may be {@code null}.
+   */
+  @com.google.api.client.util.Key
+  private Long id;
+
+
+
+  /**
+   * The value may be {@code null}.
+   */
+  @com.google.api.client.util.Key
+  private String name;
 
 
 
@@ -70,16 +86,16 @@ public final class User extends GenericJson {
 
    * The value returned may be {@code null}.
    */
-  public String getDeviceName() {
-    return deviceName;
+  public String getKind() {
+    return kind;
   }
 
   /**
 
    * The value set may be {@code null}.
    */
-  public User setDeviceName(String deviceName) {
-    this.deviceName = deviceName;
+  public Key setKind(String kind) {
+    this.kind = kind;
     return this;
   }
 
@@ -87,16 +103,16 @@ public final class User extends GenericJson {
 
    * The value returned may be {@code null}.
    */
-  public String getRegistrationID() {
-    return registrationID;
+  public Boolean getComplete() {
+    return complete;
   }
 
   /**
 
    * The value set may be {@code null}.
    */
-  public User setRegistrationID(String registrationID) {
-    this.registrationID = registrationID;
+  public Key setComplete(Boolean complete) {
+    this.complete = complete;
     return this;
   }
 
@@ -104,16 +120,16 @@ public final class User extends GenericJson {
 
    * The value returned may be {@code null}.
    */
-  public String getEmail() {
-    return email;
+  public Key getParent() {
+    return parent;
   }
 
   /**
 
    * The value set may be {@code null}.
    */
-  public User setEmail(String email) {
-    this.email = email;
+  public Key setParent(Key parent) {
+    this.parent = parent;
     return this;
   }
 
@@ -121,7 +137,24 @@ public final class User extends GenericJson {
 
    * The value returned may be {@code null}.
    */
-  public Key getId() {
+  public String getNamespace() {
+    return namespace;
+  }
+
+  /**
+
+   * The value set may be {@code null}.
+   */
+  public Key setNamespace(String namespace) {
+    this.namespace = namespace;
+    return this;
+  }
+
+  /**
+
+   * The value returned may be {@code null}.
+   */
+  public Long getId() {
     return id;
   }
 
@@ -129,8 +162,25 @@ public final class User extends GenericJson {
 
    * The value set may be {@code null}.
    */
-  public User setId(Key id) {
+  public Key setId(Long id) {
     this.id = id;
+    return this;
+  }
+
+  /**
+
+   * The value returned may be {@code null}.
+   */
+  public String getName() {
+    return name;
+  }
+
+  /**
+
+   * The value set may be {@code null}.
+   */
+  public Key setName(String name) {
+    this.name = name;
     return this;
   }
 
@@ -141,8 +191,8 @@ public final class User extends GenericJson {
    * Sets the HTTP headers returned with the server response, or <code>null</code>.
    *
    * This member should only be non-null if this object was the top level element of a response. For
-   * example, a request that returns a single {@link User} would include the response headers, while
-   * a request which returns an array of {@link User}, would have a non-null response header in the
+   * example, a request that returns a single {@link Key} would include the response headers, while
+   * a request which returns an array of {@link Key}, would have a non-null response header in the
    * enclosing object only.
    */
   public void setResponseHeaders(HttpHeaders responseHeaders) {
@@ -156,6 +206,8 @@ public final class User extends GenericJson {
   public HttpHeaders getResponseHeaders() {
     return responseHeaders;
   }
+
+
 
 
 

@@ -11,8 +11,8 @@
  */
 /*
  * This file was generated.
- *  with google-apis-code-generator 1.1.1 (build: 2012-07-23 18:47:07 UTC)
- *  on 2012-08-04 at 12:43:12 UTC 
+ *  with google-apis-code-generator 1.1.1 (build: 2012-08-07 15:34:44 UTC)
+ *  on 2012-08-18 at 11:29:53 UTC 
  */
 
 package com.appspot.api.services.sherizi;
@@ -216,14 +216,16 @@ public class Sherizi extends GoogleClient {
    * This request holds the parameters needed by the the sherizi server.  After setting any optional
    * parameters, call the {@link InitiateTransfer#execute()} method to invoke the remote operation.
    *
-   * @param idFrom
-   * @param idTo
+   * @param emailFrom
+   * @param deviceFrom
+   * @param emailTo
+   * @param deviceTo
    * @param transferMode
    * @return the request
    * @throws IOException if the initialization of the request fails
    */
-  public InitiateTransfer initiateTransfer(String idFrom, String idTo, String transferMode) throws IOException {
-    InitiateTransfer result = new InitiateTransfer(idFrom, idTo, transferMode);
+  public InitiateTransfer initiateTransfer(String emailFrom, String deviceFrom, String emailTo, String deviceTo, String transferMode) throws IOException {
+    InitiateTransfer result = new InitiateTransfer(emailFrom, deviceFrom, emailTo, deviceTo, transferMode);
     initialize(result);
     return result;
   }
@@ -231,15 +233,17 @@ public class Sherizi extends GoogleClient {
 
   public class InitiateTransfer extends SheriziRequest {
 
-    private static final String REST_PATH = "initiateTransfer/{idFrom}/{idTo}/{transferMode}";
+    private static final String REST_PATH = "initiateTransfer/{emailFrom}/{deviceFrom}/{emailTo}/{deviceTo}/{transferMode}";
 
     /**
      * Internal constructor.  Use the convenience method instead.
      */
-    InitiateTransfer(String idFrom, String idTo, String transferMode) {
+    InitiateTransfer(String emailFrom, String deviceFrom, String emailTo, String deviceTo, String transferMode) {
       super(Sherizi.this, HttpMethod.POST, REST_PATH, null);
-      this.idFrom = Preconditions.checkNotNull(idFrom, "Required parameter idFrom must be specified.");
-      this.idTo = Preconditions.checkNotNull(idTo, "Required parameter idTo must be specified.");
+      this.emailFrom = Preconditions.checkNotNull(emailFrom, "Required parameter emailFrom must be specified.");
+      this.deviceFrom = Preconditions.checkNotNull(deviceFrom, "Required parameter deviceFrom must be specified.");
+      this.emailTo = Preconditions.checkNotNull(emailTo, "Required parameter emailTo must be specified.");
+      this.deviceTo = Preconditions.checkNotNull(deviceTo, "Required parameter deviceTo must be specified.");
       this.transferMode = Preconditions.checkNotNull(transferMode, "Required parameter transferMode must be specified.");
     }
 
@@ -297,35 +301,69 @@ public class Sherizi extends GoogleClient {
 
 
     @com.google.api.client.util.Key
-    private String idFrom;
+    private String emailFrom;
 
     /**
 
      */
-    public String getIdFrom() {
-      return idFrom;
+    public String getEmailFrom() {
+      return emailFrom;
     }
 
 
-    public InitiateTransfer setIdFrom(String idFrom) {
-      this.idFrom = idFrom;
+    public InitiateTransfer setEmailFrom(String emailFrom) {
+      this.emailFrom = emailFrom;
       return this;
     }
 
 
     @com.google.api.client.util.Key
-    private String idTo;
+    private String deviceFrom;
 
     /**
 
      */
-    public String getIdTo() {
-      return idTo;
+    public String getDeviceFrom() {
+      return deviceFrom;
     }
 
 
-    public InitiateTransfer setIdTo(String idTo) {
-      this.idTo = idTo;
+    public InitiateTransfer setDeviceFrom(String deviceFrom) {
+      this.deviceFrom = deviceFrom;
+      return this;
+    }
+
+
+    @com.google.api.client.util.Key
+    private String emailTo;
+
+    /**
+
+     */
+    public String getEmailTo() {
+      return emailTo;
+    }
+
+
+    public InitiateTransfer setEmailTo(String emailTo) {
+      this.emailTo = emailTo;
+      return this;
+    }
+
+
+    @com.google.api.client.util.Key
+    private String deviceTo;
+
+    /**
+
+     */
+    public String getDeviceTo() {
+      return deviceTo;
+    }
+
+
+    public InitiateTransfer setDeviceTo(String deviceTo) {
+      this.deviceTo = deviceTo;
       return this;
     }
 
@@ -356,12 +394,13 @@ public class Sherizi extends GoogleClient {
    * This request holds the parameters needed by the the sherizi server.  After setting any optional
    * parameters, call the {@link DeleteUser#execute()} method to invoke the remote operation.
    *
-   * @param id
+   * @param email
+   * @param deviceName
    * @return the request
    * @throws IOException if the initialization of the request fails
    */
-  public DeleteUser deleteUser(String id) throws IOException {
-    DeleteUser result = new DeleteUser(id);
+  public DeleteUser deleteUser(String email, String deviceName) throws IOException {
+    DeleteUser result = new DeleteUser(email, deviceName);
     initialize(result);
     return result;
   }
@@ -369,14 +408,15 @@ public class Sherizi extends GoogleClient {
 
   public class DeleteUser extends SheriziRequest {
 
-    private static final String REST_PATH = "user/{id}";
+    private static final String REST_PATH = "user/{email}/{deviceName}";
 
     /**
      * Internal constructor.  Use the convenience method instead.
      */
-    DeleteUser(String id) {
+    DeleteUser(String email, String deviceName) {
       super(Sherizi.this, HttpMethod.DELETE, REST_PATH, null);
-      this.id = Preconditions.checkNotNull(id, "Required parameter id must be specified.");
+      this.email = Preconditions.checkNotNull(email, "Required parameter email must be specified.");
+      this.deviceName = Preconditions.checkNotNull(deviceName, "Required parameter deviceName must be specified.");
     }
 
 
@@ -437,18 +477,35 @@ public class Sherizi extends GoogleClient {
 
 
     @com.google.api.client.util.Key
-    private String id;
+    private String email;
 
     /**
 
      */
-    public String getId() {
-      return id;
+    public String getEmail() {
+      return email;
     }
 
 
-    public DeleteUser setId(String id) {
-      this.id = id;
+    public DeleteUser setEmail(String email) {
+      this.email = email;
+      return this;
+    }
+
+
+    @com.google.api.client.util.Key
+    private String deviceName;
+
+    /**
+
+     */
+    public String getDeviceName() {
+      return deviceName;
+    }
+
+
+    public DeleteUser setDeviceName(String deviceName) {
+      this.deviceName = deviceName;
       return this;
     }
 
@@ -462,12 +519,12 @@ public class Sherizi extends GoogleClient {
    * This request holds the parameters needed by the the sherizi server.  After setting any optional
    * parameters, call the {@link SearchFriends#execute()} method to invoke the remote operation.
    *
-   * @param googleAccounts
+   * @param emails
    * @return the request
    * @throws IOException if the initialization of the request fails
    */
-  public SearchFriends searchFriends(String googleAccounts) throws IOException {
-    SearchFriends result = new SearchFriends(googleAccounts);
+  public SearchFriends searchFriends(String emails) throws IOException {
+    SearchFriends result = new SearchFriends(emails);
     initialize(result);
     return result;
   }
@@ -475,14 +532,14 @@ public class Sherizi extends GoogleClient {
 
   public class SearchFriends extends SheriziRequest {
 
-    private static final String REST_PATH = "searchFriends/{googleAccounts}";
+    private static final String REST_PATH = "searchFriends/{emails}";
 
     /**
      * Internal constructor.  Use the convenience method instead.
      */
-    SearchFriends(String googleAccounts) {
+    SearchFriends(String emails) {
       super(Sherizi.this, HttpMethod.POST, REST_PATH, null);
-      this.googleAccounts = Preconditions.checkNotNull(googleAccounts, "Required parameter googleAccounts must be specified.");
+      this.emails = Preconditions.checkNotNull(emails, "Required parameter emails must be specified.");
     }
 
 
@@ -543,18 +600,18 @@ public class Sherizi extends GoogleClient {
 
 
     @com.google.api.client.util.Key
-    private String googleAccounts;
+    private String emails;
 
     /**
 
      */
-    public String getGoogleAccounts() {
-      return googleAccounts;
+    public String getEmails() {
+      return emails;
     }
 
 
-    public SearchFriends setGoogleAccounts(String googleAccounts) {
-      this.googleAccounts = googleAccounts;
+    public SearchFriends setEmails(String emails) {
+      this.emails = emails;
       return this;
     }
 

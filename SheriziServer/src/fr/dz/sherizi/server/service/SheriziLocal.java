@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import fr.dz.sherizi.common.exception.SheriziException;
 import fr.dz.sherizi.server.model.User;
 import fr.dz.sherizi.server.utils.Utils;
 
@@ -19,7 +20,7 @@ public class SheriziLocal {
 	 * @return
 	 */
 	@SuppressWarnings({ "unchecked" })
-	public List<User> getAllUsers() {
+	public List<User> getAllUsers() throws SheriziException {
 		EntityManager mgr = Utils.getEntityManager();
 		List<User> result = new ArrayList<User>();
 		try {
@@ -27,6 +28,8 @@ public class SheriziLocal {
 			for (Object obj : (List<Object>) query.getResultList()) {
 				result.add((User) obj);
 			}
+		} catch(Throwable t) {
+			throw new SheriziException("Unknown error during getAllUsers : "+t.getMessage());
 		} finally {
 			mgr.close();
 		}
@@ -35,14 +38,22 @@ public class SheriziLocal {
 
 	/**
 	 * Retrieves a user from the datastore
-	 * @param id
+	 * @param email
+	 * @param deviceName
 	 * @return
 	 */
-	public User getUser(String id) {
+	public User getUser(String email, String deviceName) throws SheriziException {
 		EntityManager mgr = Utils.getEntityManager();
 		User user = null;
 		try {
-			user = mgr.find(User.class, id);
+			Query query = mgr.createQuery("select from "+User.class.getSimpleName()+" u "+
+					"where u."+User.EMAIL_FIELD+" = :emails "+
+					"and u."+User.DEVICE_NAME_FIELD+" = :deviceName ");
+			query.setParameter("email", email);
+			query.setParameter("deviceName", deviceName);
+			user = (User) query.getSingleResult();
+		} catch(Throwable t) {
+			throw new SheriziException("Unknown error during getUser : "+t.getMessage());
 		} finally {
 			mgr.close();
 		}

@@ -10,8 +10,8 @@ import javax.persistence.Query;
 
 import com.google.api.server.spi.config.Api;
 
+import fr.dz.sherizi.common.exception.SheriziException;
 import fr.dz.sherizi.common.push.PushMessage;
-import fr.dz.sherizi.server.exception.SheriziException;
 import fr.dz.sherizi.server.model.User;
 import fr.dz.sherizi.server.push.PushUtils;
 import fr.dz.sherizi.server.service.version.SheriziV1;
@@ -29,6 +29,7 @@ public class SheriziRemote implements SheriziV1 {
 	public User saveOrUpdateUser(User user) throws SheriziException {
 		EntityManager mgr = Utils.getEntityManager();
 		try {
+			user.updateKey();
 			mgr.persist(user);
 		} catch(Throwable t) {
 			throw new SheriziException("Unknown error during saveOrUpdate : "+t.getMessage());
@@ -39,12 +40,14 @@ public class SheriziRemote implements SheriziV1 {
 	}
 
 	@Override
-	public User deleteUser(@Named("id") String id) throws SheriziException {
+	public User deleteUser(@Named("email") String email, @Named("deviceName") String deviceName) throws SheriziException {
 		EntityManager mgr = Utils.getEntityManager();
 		User user = null;
 		try {
-			user = mgr.find(User.class, id);
-			mgr.remove(user);
+			user = local.getUser(email, deviceName);
+			if ( user != null ) {
+				mgr.remove(user);
+			}
 		} catch(Throwable t) {
 			throw new SheriziException("Unknown error during deleteUser : "+t.getMessage());
 		} finally {
@@ -55,16 +58,16 @@ public class SheriziRemote implements SheriziV1 {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<User> searchFriends(@Named("googleAccounts") String googleAccounts) throws SheriziException {
+	public List<User> searchFriends(@Named("emails") String emails) throws SheriziException {
 		EntityManager mgr = Utils.getEntityManager();
 		List<User> result = new ArrayList<User>();
 		try {
-			String[] splitted = googleAccounts != null && ! googleAccounts.isEmpty() ? googleAccounts.split(",") : null;
-			List<String> googleAccountsList = splitted != null && splitted.length > 0 ? Arrays.asList(splitted) : null;
-			if ( googleAccountsList != null ) {
+			String[] splitted = emails != null && ! emails.isEmpty() ? emails.split(",") : null;
+			List<String> emailsList = splitted != null && splitted.length > 0 ? Arrays.asList(splitted) : null;
+			if ( emailsList != null ) {
 				Query query = mgr.createQuery("select from "+User.class.getSimpleName()+" u "+
-						"where u.googleAccount in (:googleAccounts)");
-				query.setParameter("googleAccounts", googleAccountsList);
+						"where u."+User.EMAIL_FIELD+" in (:emails)");
+				query.setParameter("emails", emailsList);
 				for (Object obj : (List<Object>) query.getResultList()) {
 					result.add((User) obj);
 				}
@@ -78,13 +81,13 @@ public class SheriziRemote implements SheriziV1 {
 	}
 
 	@Override
-	public void initiateTransfer(@Named("idFrom") String idFrom,
-			@Named("idTo") String idTo,
+	public void initiateTransfer(@Named("emailFrom") String emailFrom, @Named("deviceFrom") String deviceFrom,
+			@Named("emailTo") String emailTo, @Named("deviceTo") String deviceTo,
 			@Named("transferMode") String transferMode) throws SheriziException {
 
 		// Gets the two users
-		User from = local.getUser(idFrom);
-		User to = local.getUser(idTo);
+		User from = local.getUser(emailFrom, deviceFrom);
+		User to = local.getUser(emailTo, deviceTo);
 
 		// Sends a push notification to the targetted user
 		PushMessage message = new PushMessage("initiateTransfer");

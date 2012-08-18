@@ -61,12 +61,43 @@
   }
  },
  "schemas": {
+  "Key": {
+   "id": "Key",
+   "type": "object",
+   "properties": {
+    "complete": {
+     "type": "boolean"
+    },
+    "id": {
+     "type": "string",
+     "format": "int64"
+    },
+    "kind": {
+     "type": "string"
+    },
+    "name": {
+     "type": "string"
+    },
+    "namespace": {
+     "type": "string"
+    },
+    "parent": {
+     "$ref": "Key"
+    }
+   }
+  },
   "User": {
    "id": "User",
    "type": "object",
    "properties": {
-    "googleAccount": {
+    "deviceName": {
      "type": "string"
+    },
+    "email": {
+     "type": "string"
+    },
+    "id": {
+     "$ref": "Key"
     },
     "registrationID": {
      "type": "string"
@@ -89,17 +120,23 @@
  "methods": {
   "deleteUser": {
    "id": "sherizi.deleteUser",
-   "path": "user/{id}",
+   "path": "user/{email}/{deviceName}",
    "httpMethod": "DELETE",
    "parameters": {
-    "id": {
+    "deviceName": {
+     "type": "string",
+     "required": true,
+     "location": "path"
+    },
+    "email": {
      "type": "string",
      "required": true,
      "location": "path"
     }
    },
    "parameterOrder": [
-    "id"
+    "email",
+    "deviceName"
    ],
    "response": {
     "$ref": "User"
@@ -107,15 +144,25 @@
   },
   "initiateTransfer": {
    "id": "sherizi.initiateTransfer",
-   "path": "initiateTransfer/{idFrom}/{idTo}/{transferMode}",
+   "path": "initiateTransfer/{emailFrom}/{deviceFrom}/{emailTo}/{deviceTo}/{transferMode}",
    "httpMethod": "POST",
    "parameters": {
-    "idFrom": {
+    "deviceFrom": {
      "type": "string",
      "required": true,
      "location": "path"
     },
-    "idTo": {
+    "deviceTo": {
+     "type": "string",
+     "required": true,
+     "location": "path"
+    },
+    "emailFrom": {
+     "type": "string",
+     "required": true,
+     "location": "path"
+    },
+    "emailTo": {
      "type": "string",
      "required": true,
      "location": "path"
@@ -127,8 +174,10 @@
     }
    },
    "parameterOrder": [
-    "idFrom",
-    "idTo",
+    "emailFrom",
+    "deviceFrom",
+    "emailTo",
+    "deviceTo",
     "transferMode"
    ]
   },
@@ -145,17 +194,17 @@
   },
   "searchFriends": {
    "id": "sherizi.searchFriends",
-   "path": "searchFriends/{googleAccounts}",
+   "path": "searchFriends/{emails}",
    "httpMethod": "POST",
    "parameters": {
-    "googleAccounts": {
+    "emails": {
      "type": "string",
      "required": true,
      "location": "path"
     }
    },
    "parameterOrder": [
-    "googleAccounts"
+    "emails"
    ],
    "response": {
     "$ref": "Users"

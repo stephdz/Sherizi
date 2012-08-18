@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import fr.dz.sherizi.R;
 import fr.dz.sherizi.gui.HomeActivity;
@@ -17,7 +18,11 @@ import fr.dz.sherizi.gui.HomeActivity;
  */
 public class Utils {
 
-	private static final String GOOGLE_ACCOUNT_TYPE = "com.google";
+	// The current google account
+	private static String googleAccount = null;
+
+	// Constants
+	public static final String GOOGLE_ACCOUNT_TYPE = "com.google";
 
 	/**
 	 * Shows an alert dialog with the given message.
@@ -57,12 +62,24 @@ public class Utils {
 	 * @return
 	 */
 	public static String getGoogleAccount(Context context) {
-		Account[] accounts = AccountManager.get(context).getAccounts();
-		for (Account account : accounts) {
-		    if ( GOOGLE_ACCOUNT_TYPE.equals(account.type) ) {
-		        return account.name;
-		    }
+		if ( googleAccount == null ) {
+			Account[] accounts = AccountManager.get(context).getAccounts();
+			for (Account account : accounts) {
+			    if ( GOOGLE_ACCOUNT_TYPE.equals(account.type) ) {
+			    	googleAccount = account.name;
+			    	break;
+			    }
+			}
 		}
-		return null;
+		return googleAccount;
+	}
+
+	/**
+	 * Gets the device name
+	 * @param context
+	 * @return
+	 */
+	public static String getDeviceName(Context context) {
+		return Build.MODEL;
 	}
 }

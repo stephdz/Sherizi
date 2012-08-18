@@ -8,8 +8,8 @@
 
   <groupId>com.google.apis</groupId>
   <artifactId>google-api-services-sherizi</artifactId>
-  <version>v1-rev20120804124312-1.7.2-beta</version>
-  <name> v1 (revision 20120804124312)</name>
+  <version>v1-rev20120818112953-1.7.2-beta</version>
+  <name> v1 (revision 20120818112953)</name>
   <packaging>jar</packaging>
 
   <inceptionYear>2011</inceptionYear>

@@ -4,4 +4,9 @@
     <dimen name="padding_medium">16dp</dimen>
     <dimen name="padding_large">16dp</dimen>
 
+    <dimen name="contact_photo_size">96dp</dimen>
+    <dimen name="half_contact_photo_size">48dp</dimen>
+    <dimen name="text_size">22sp</dimen>
+    <dimen name="item_text_size">22sp</dimen>
+    
 </resources>

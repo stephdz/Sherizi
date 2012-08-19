@@ -1,8 +1,13 @@
 <resources>
-
-    <dimen name="padding_small">8dp</dimen>
+    
+    <dimen name="padding_small">4dp</dimen>
     <dimen name="padding_medium">8dp</dimen>
     <dimen name="padding_large">16dp</dimen>
     <dimen name="title_size">26dp</dimen>
+    
+    <dimen name="contact_photo_size">72dp</dimen>
+    <dimen name="half_contact_photo_size">36dp</dimen>
+    <dimen name="text_size">16sp</dimen>
+    <dimen name="item_text_size">16sp</dimen>
 
 </resources>

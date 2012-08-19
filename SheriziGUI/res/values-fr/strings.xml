@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PullToRefreshListView</string>
+
+    <string name="ptr_pull_to_refresh">Tirez pour rafraîchir</string>
+    <string name="ptr_release_to_refresh">Relâchez pour rafraîchir</string>
+    <string name="ptr_refreshing">Chargement des données</string>
+</resources>

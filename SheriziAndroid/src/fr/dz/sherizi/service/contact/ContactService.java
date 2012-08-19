@@ -1,6 +1,7 @@
 package fr.dz.sherizi.service.contact;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,8 +10,11 @@ import java.util.Map;
 import java.util.Set;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
 
@@ -114,6 +118,21 @@ public class ContactService {
 		result.add(new Email(googleAccount, Utils.GOOGLE_ACCOUNT_TYPE));
 
 		return result;
+	}
+
+	/**
+	 * Returns the contact photo
+	 * @param context
+	 * @param contact
+	 * @return
+	 */
+	public Bitmap getContactPhoto(Context context, Contact contact) {
+	    Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.valueOf(contact.getId()));
+	    InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(context.getContentResolver(), uri);
+	    if (input == null) {
+	        return null;
+	    }
+	    return BitmapFactory.decodeStream(input);
 	}
 
 	/**

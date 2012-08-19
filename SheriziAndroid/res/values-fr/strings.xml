@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Sherizi</string>
+    <string name="friends_title">Choisissez un ami</string>
+    <string name="friends_intro">Veuillez sélectionner un ami dans la liste :</string>
+    <string name="contact_photo">Photo</string>
+    <string name="contact_description_start">Connecté sur</string>
+    <string name="contact_description_end"></string>
+    <string name="no_result">Aucun résultat</string>
+</resources>

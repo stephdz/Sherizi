@@ -7,9 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import fr.dz.sherizi.R;
 import fr.dz.sherizi.service.contact.Contact;
+import fr.dz.sherizi.service.contact.ContactService;
 
 
 /**
@@ -31,11 +33,17 @@ public class ContactAdapter extends BaseAdapter {
 	}
 
 	public int getCount() {
-		return list.size();
+		if ( list == null ) {
+			return 0;
+		} else if ( list.isEmpty() ) {
+			return 1;
+		} else {
+			return list.size();
+		}
 	}
 
 	public Object getItem(int position) {
-		return list.get(position);
+		return list == null || list.isEmpty() ? null : list.get(position);
 	}
 
 	public long getItemId(int position) {
@@ -43,20 +51,35 @@ public class ContactAdapter extends BaseAdapter {
 	}
 
 	public View getView(int position, View convertView, ViewGroup parent) {
+		if ( list != null ) {
+			return getContactConvertView(position, convertView);
+		} else if ( list.isEmpty() ){
+			return getEmptyConvertView(position, convertView);
+		} else {
+			return null;
+		}
+	}
+
+	protected View getEmptyConvertView(int position, View convertView) {
+		return LayoutInflater.from(context).inflate(R.layout.contact_item_empty, null);
+	}
+
+	protected View getContactConvertView(int position, View convertView) {
 		ContactViewHolder holder;
+		Contact contact = list.get(position);
 		if (convertView == null) {
 			holder = new ContactViewHolder();
 			convertView = LayoutInflater.from(context).inflate(R.layout.contact_item, null);
+			holder.setPhoto((ImageView) convertView.findViewById(R.id.photo));
 			holder.setName((TextView) convertView.findViewById(R.id.contactName));
-			holder.setEmails((TextView) convertView.findViewById(R.id.contactEmails));
-			holder.setDevices((TextView) convertView.findViewById(R.id.contactDevices));
+			holder.setDescription((TextView) convertView.findViewById(R.id.contactDescription));
 			convertView.setTag(holder);
 		} else {
 			holder = (ContactViewHolder) convertView.getTag();
 		}
-		holder.getName().setText(list.get(position).getName());
-		holder.getEmails().setText(list.get(position).getEmails().toString());
-		holder.getDevices().setText(list.get(position).getDevices().toString());
+		holder.getPhoto().setImageBitmap(ContactService.getInstance().getContactPhoto(convertView.getContext(), contact));
+		holder.getName().setText(contact.getName());
+		holder.getDescription().setText(contact.getDescription(convertView.getContext()));
 		return convertView;
 	}
 }

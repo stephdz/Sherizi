@@ -9,6 +9,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
+import fr.dz.sherizi.R;
 import fr.dz.sherizi.utils.Utils;
 
 /**
@@ -39,6 +40,17 @@ public class Contact {
 			this.emails.add(Email.createEmail(emailCur));
 		}
 		emailCur.close();
+	}
+
+	/**
+	 * Copy constructor
+	 * @param contact
+	 */
+	public Contact(Contact contact) {
+		this.id = contact.id;
+		this.name = contact.name;
+		this.emails = contact.emails;
+		this.devices = contact.devices;
 	}
 
 	/**
@@ -75,9 +87,45 @@ public class Contact {
 		return result;
 	}
 
+	/**
+	 * Returns the contact description
+	 * @param context
+	 * @return
+	 */
+	public String getDescription(Context context) {
+		StringBuffer result = new StringBuffer();
+		result.append(context.getString(R.string.contact_description_start));
+		boolean first = true;
+		for ( String device : devices ) {
+			if ( first ) {
+				first = false;
+			} else {
+				result.append(",");
+			}
+			result.append(" "+device);
+		}
+		result.append(context.getString(R.string.contact_description_end));
+		return result.toString();
+	}
+
+	/**
+	 * Duplicates the contact
+	 */
+	public Contact duplicate() {
+		return new Contact(this);
+	}
+
 	/*
 	 * GETTERS & SETTERS
 	 */
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;

@@ -1,5 +1,6 @@
 package fr.dz.sherizi.gui.adapter;
 
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -7,13 +8,21 @@ import android.widget.TextView;
  */
 public class ContactViewHolder {
 
+	private ImageView photo;
 	private TextView name;
-	private TextView emails;
-	private TextView devices;
+	private TextView description;
 
 	/*
 	 * GETTERS & SETTERS
 	 */
+
+	public ImageView getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(ImageView photo) {
+		this.photo = photo;
+	}
 
 	public TextView getName() {
 		return name;
@@ -23,19 +32,11 @@ public class ContactViewHolder {
 		this.name = name;
 	}
 
-	public TextView getEmails() {
-		return emails;
+	public TextView getDescription() {
+		return description;
 	}
 
-	public void setEmails(TextView emails) {
-		this.emails = emails;
-	}
-
-	public TextView getDevices() {
-		return devices;
-	}
-
-	public void setDevices(TextView devices) {
-		this.devices = devices;
+	public void setDescription(TextView description) {
+		this.description = description;
 	}
 }

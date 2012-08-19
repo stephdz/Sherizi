@@ -40,8 +40,8 @@ public class Utils {
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
 		builder.setContentIntent(pendingIntent)
-				.setSmallIcon(R.drawable.ic_launcher)
-				.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher))
+				.setSmallIcon(R.drawable.sherizi)
+				.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.sherizi))
 				.setTicker(message)
 				.setWhen(System.currentTimeMillis())
 				.setAutoCancel(true)

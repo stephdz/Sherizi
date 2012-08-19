@@ -1,4 +1,4 @@
 <resources>
-    <color name="list_view_background">#FFEBEBEB</color>
-    <color name="list_view_selected">#FFFAAC58</color>
+    <color name="activity_background">#FFFFFFFF</color>
+    <color name="list_view_background">#FFFFFFFF</color>
 </resources>

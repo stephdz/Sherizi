@@ -10,12 +10,13 @@
         android:layout_width="@dimen/contact_photo_size"
         android:layout_height="@dimen/contact_photo_size"
         android:contentDescription="@string/contact_photo"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/sherizi" />
 
     <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical" >
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="@dimen/padding_small">
 
         <TableRow
             android:layout_width="fill_parent"
@@ -37,7 +38,7 @@
                 style="@style/ItemText"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
-                android:text="Connecté sur HTC Desire" />
+                android:text="Connecté sur TransformerTF101" />
 
         </TableRow>
     </TableLayout>

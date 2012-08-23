@@ -9,6 +9,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
+
+import com.appspot.api.services.sherizi.model.User;
+
 import fr.dz.sherizi.R;
 import fr.dz.sherizi.utils.Utils;
 
@@ -20,7 +23,7 @@ public class Contact {
 	private String id;
 	private String name;
 	private List<Email> emails = new ArrayList<Email>();
-	private Set<String> devices = new HashSet<String>();
+	private Set<User> users = new HashSet<User>();
 
 	/**
 	 * Constructor from a cursor
@@ -50,7 +53,7 @@ public class Contact {
 		this.id = contact.id;
 		this.name = contact.name;
 		this.emails = contact.emails;
-		this.devices = contact.devices;
+		this.users = contact.users;
 	}
 
 	/**
@@ -96,7 +99,7 @@ public class Contact {
 		StringBuffer result = new StringBuffer();
 		result.append(context.getString(R.string.contact_description_start));
 		boolean first = true;
-		for ( String device : devices ) {
+		for ( String device : getDevices() ) {
 			if ( first ) {
 				first = false;
 			} else {
@@ -106,6 +109,19 @@ public class Contact {
 		}
 		result.append(context.getString(R.string.contact_description_end));
 		return result.toString();
+	}
+
+	/**
+	 * Returns the contact description
+	 * @param context
+	 * @return
+	 */
+	public Set<String> getDevices() {
+		Set<String> result = new HashSet<String>();
+		for ( User user : users ) {
+			result.add(user.getDeviceName());
+		}
+		return result;
 	}
 
 	/**
@@ -143,11 +159,11 @@ public class Contact {
 		this.emails = emails;
 	}
 
-	public Set<String> getDevices() {
-		return devices;
+	public Set<User> getUsers() {
+		return users;
 	}
 
-	public void setDevices(Set<String> devices) {
-		this.devices = devices;
+	public void setUsers(Set<User> users) {
+		this.users = users;
 	}
 }

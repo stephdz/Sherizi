@@ -144,6 +144,8 @@ public class FriendsActivity extends SheriziActivity {
 				makeToast((String) information);
 			}
 		});
+
+		// TODO Get the user from a device (and give the choice to the user)
 		shareManager.share(shared, new User());
 	}
 }

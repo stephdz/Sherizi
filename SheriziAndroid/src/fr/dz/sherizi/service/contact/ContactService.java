@@ -173,17 +173,25 @@ public class ContactService {
 	 */
 	protected List<Contact> getContactsFromUsers(Context context, List<User> users) {
 
-		// Prepares a map of email and devices
-		Map<String,Set<String>> userDevices = new HashMap<String,Set<String>>();
+		// Prepares a map of email and users
+		Map<String,Set<User>> usersMap = new HashMap<String,Set<User>>();
 		for ( User user : users ) {
-			if ( ! userDevices.containsKey(user.getEmail()) ) {
-				userDevices.put(user.getEmail(), new HashSet<String>());
+			if ( ! usersMap.containsKey(user.getEmail()) ) {
+				usersMap.put(user.getEmail(), new HashSet<User>());
 			}
-			userDevices.get(user.getEmail()).add(user.getDeviceName());
+			usersMap.get(user.getEmail()).add(user);
+		}
+
+		// Prepares a list of users with the current device name
+		List<User> usersWithCurrentDevice = new ArrayList<User>();
+		for ( User user : users ) {
+			if ( Utils.getDeviceName(context).equals(user.getDeviceName()) ) {
+				usersWithCurrentDevice.add(user);
+			}
 		}
 
 		// Gets contacts ids from users
-		List<String> contactIds = getContactsIdsFromEmails(context, userDevices.keySet());
+		List<String> contactIds = getContactsIdsFromEmails(context, usersMap.keySet());
 
 		// Gets contacts from ids
 		List<Contact> result = getContactsFromIds(context, contactIds);
@@ -192,18 +200,18 @@ public class ContactService {
 		List<Contact> toBeRemoved = new ArrayList<Contact>();
 		for ( Contact contact : result ) {
 			for ( Email email : contact.getEmails() ) {
-				if ( userDevices.containsKey(email.getEmail()) ) {
-					contact.getDevices().addAll(userDevices.get(email.getEmail()));
+				if ( usersMap.containsKey(email.getEmail()) ) {
+					contact.getUsers().addAll(usersMap.get(email.getEmail()));
 				}
 			}
 
 			// We remove the current device if it's the current user
 			if ( contact.isCurrentUser(context) ) {
-				contact.getDevices().remove(Utils.getDeviceName(context));
+				contact.getUsers().removeAll(usersWithCurrentDevice);
 			}
 
 			// We remove the users that don't have a device (or current user if he has only one device)
-			if ( contact.getDevices().isEmpty() ) {
+			if ( contact.getUsers().isEmpty() ) {
 				toBeRemoved.add(contact);
 			}
 		}

@@ -80,16 +80,12 @@
       }
     },
     "sherizi.initiateTransfer" : {
-      "path" : "initiateTransfer/{emailFrom}/{deviceFrom}/{emailTo}/{deviceTo}/{transferMode}",
+      "path" : "initiateTransfer/{emailsFrom}/{emailTo}/{deviceTo}/{transferInformations}",
       "httpMethod" : "POST",
       "rosyMethod" : "SheriziRemote.initiateTransfer",
       "request" : {
         "parameters" : {
-          "emailFrom" : {
-            "required" : true,
-            "type" : "string"
-          },
-          "deviceFrom" : {
+          "emailsFrom" : {
             "required" : true,
             "type" : "string"
           },
@@ -101,7 +97,7 @@
             "required" : true,
             "type" : "string"
           },
-          "transferMode" : {
+          "transferInformations" : {
             "required" : true,
             "type" : "string"
           }

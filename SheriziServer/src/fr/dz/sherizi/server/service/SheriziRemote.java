@@ -81,18 +81,17 @@ public class SheriziRemote implements SheriziV1 {
 	}
 
 	@Override
-	public void initiateTransfer(@Named("emailFrom") String emailFrom, @Named("deviceFrom") String deviceFrom,
+	public void initiateTransfer(@Named("emailsFrom") String emailsFrom,
 			@Named("emailTo") String emailTo, @Named("deviceTo") String deviceTo,
-			@Named("transferMode") String transferMode) throws SheriziException {
+			@Named("transferInformations") String transferInformations) throws SheriziException {
 
-		// Gets the two users
-		User from = local.getUser(emailFrom, deviceFrom);
+		// Gets the target user
 		User to = local.getUser(emailTo, deviceTo);
 
 		// Sends a push notification to the targetted user
 		PushMessage message = new PushMessage("initiateTransfer");
-		message.addParameter("transferMode", transferMode);
-		message.addParameter("sourceUser", from.toString());
+		message.addParameter("transferInformations", transferInformations);
+		message.addParameter("sourceUser", emailsFrom);
 		PushUtils.sendMessage(message, to);
 	}
 }

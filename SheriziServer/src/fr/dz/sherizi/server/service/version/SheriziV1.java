@@ -37,12 +37,11 @@ public interface SheriziV1 {
 
 	/**
 	 * Initiates the transfer between 2 users using the specified transfer mode
-	 * @param emailFrom
-	 * @param deviceFrom
-	 * @param emailTo
-	 * @param deviceTo
-	 * @param transferMode
+	 * @param emailsFrom Emails list of the user requesting sharing
+	 * @param emailTo Email of the target user
+	 * @param deviceTo Device of the target user
+	 * @param transferInformations Transfer informations serialized into string
 	 */
-	public void initiateTransfer(String emailFrom, String deviceFrom, String emailTo, String deviceTo, String transferMode)
+	public void initiateTransfer(String emailsFrom, String emailTo, String deviceTo, String transferInformations)
 		throws SheriziException;
 }

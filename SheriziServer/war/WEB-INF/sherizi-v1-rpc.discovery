@@ -139,15 +139,7 @@
   "sherizi.initiateTransfer": {
    "id": "sherizi.initiateTransfer",
    "parameters": {
-    "deviceFrom": {
-     "type": "string",
-     "required": true
-    },
     "deviceTo": {
-     "type": "string",
-     "required": true
-    },
-    "emailFrom": {
      "type": "string",
      "required": true
     },
@@ -155,17 +147,20 @@
      "type": "string",
      "required": true
     },
-    "transferMode": {
+    "emailsFrom": {
+     "type": "string",
+     "required": true
+    },
+    "transferInformations": {
      "type": "string",
      "required": true
     }
    },
    "parameterOrder": [
-    "emailFrom",
-    "deviceFrom",
+    "emailsFrom",
     "emailTo",
     "deviceTo",
-    "transferMode"
+    "transferInformations"
    ]
   },
   "sherizi.saveOrUpdateUser": {

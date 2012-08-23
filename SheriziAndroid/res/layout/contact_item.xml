@@ -38,7 +38,7 @@
                 style="@style/ItemText"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
-                android:text="Connecté sur TransformerTF101" />
+                android:text="Connecté sur Transformer TF101" />
 
         </TableRow>
     </TableLayout>

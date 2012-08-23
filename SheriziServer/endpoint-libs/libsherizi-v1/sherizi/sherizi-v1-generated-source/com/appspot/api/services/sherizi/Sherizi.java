@@ -11,8 +11,8 @@
  */
 /*
  * This file was generated.
- *  with google-apis-code-generator 1.1.1 (build: 2012-08-07 15:34:44 UTC)
- *  on 2012-08-18 at 11:29:53 UTC 
+ *  with google-apis-code-generator 1.1.1 (build: 2012-08-20 15:19:57 UTC)
+ *  on 2012-08-23 at 20:12:46 UTC 
  */
 
 package com.appspot.api.services.sherizi;
@@ -216,16 +216,15 @@ public class Sherizi extends GoogleClient {
    * This request holds the parameters needed by the the sherizi server.  After setting any optional
    * parameters, call the {@link InitiateTransfer#execute()} method to invoke the remote operation.
    *
-   * @param emailFrom
-   * @param deviceFrom
+   * @param emailsFrom
    * @param emailTo
    * @param deviceTo
-   * @param transferMode
+   * @param transferInformations
    * @return the request
    * @throws IOException if the initialization of the request fails
    */
-  public InitiateTransfer initiateTransfer(String emailFrom, String deviceFrom, String emailTo, String deviceTo, String transferMode) throws IOException {
-    InitiateTransfer result = new InitiateTransfer(emailFrom, deviceFrom, emailTo, deviceTo, transferMode);
+  public InitiateTransfer initiateTransfer(String emailsFrom, String emailTo, String deviceTo, String transferInformations) throws IOException {
+    InitiateTransfer result = new InitiateTransfer(emailsFrom, emailTo, deviceTo, transferInformations);
     initialize(result);
     return result;
   }
@@ -233,18 +232,17 @@ public class Sherizi extends GoogleClient {
 
   public class InitiateTransfer extends SheriziRequest {
 
-    private static final String REST_PATH = "initiateTransfer/{emailFrom}/{deviceFrom}/{emailTo}/{deviceTo}/{transferMode}";
+    private static final String REST_PATH = "initiateTransfer/{emailsFrom}/{emailTo}/{deviceTo}/{transferInformations}";
 
     /**
      * Internal constructor.  Use the convenience method instead.
      */
-    InitiateTransfer(String emailFrom, String deviceFrom, String emailTo, String deviceTo, String transferMode) {
+    InitiateTransfer(String emailsFrom, String emailTo, String deviceTo, String transferInformations) {
       super(Sherizi.this, HttpMethod.POST, REST_PATH, null);
-      this.emailFrom = Preconditions.checkNotNull(emailFrom, "Required parameter emailFrom must be specified.");
-      this.deviceFrom = Preconditions.checkNotNull(deviceFrom, "Required parameter deviceFrom must be specified.");
+      this.emailsFrom = Preconditions.checkNotNull(emailsFrom, "Required parameter emailsFrom must be specified.");
       this.emailTo = Preconditions.checkNotNull(emailTo, "Required parameter emailTo must be specified.");
       this.deviceTo = Preconditions.checkNotNull(deviceTo, "Required parameter deviceTo must be specified.");
-      this.transferMode = Preconditions.checkNotNull(transferMode, "Required parameter transferMode must be specified.");
+      this.transferInformations = Preconditions.checkNotNull(transferInformations, "Required parameter transferInformations must be specified.");
     }
 
 
@@ -301,35 +299,18 @@ public class Sherizi extends GoogleClient {
 
 
     @com.google.api.client.util.Key
-    private String emailFrom;
+    private String emailsFrom;
 
     /**
 
      */
-    public String getEmailFrom() {
-      return emailFrom;
+    public String getEmailsFrom() {
+      return emailsFrom;
     }
 
 
-    public InitiateTransfer setEmailFrom(String emailFrom) {
-      this.emailFrom = emailFrom;
-      return this;
-    }
-
-
-    @com.google.api.client.util.Key
-    private String deviceFrom;
-
-    /**
-
-     */
-    public String getDeviceFrom() {
-      return deviceFrom;
-    }
-
-
-    public InitiateTransfer setDeviceFrom(String deviceFrom) {
-      this.deviceFrom = deviceFrom;
+    public InitiateTransfer setEmailsFrom(String emailsFrom) {
+      this.emailsFrom = emailsFrom;
       return this;
     }
 
@@ -369,18 +350,18 @@ public class Sherizi extends GoogleClient {
 
 
     @com.google.api.client.util.Key
-    private String transferMode;
+    private String transferInformations;
 
     /**
 
      */
-    public String getTransferMode() {
-      return transferMode;
+    public String getTransferInformations() {
+      return transferInformations;
     }
 
 
-    public InitiateTransfer setTransferMode(String transferMode) {
-      this.transferMode = transferMode;
+    public InitiateTransfer setTransferInformations(String transferInformations) {
+      this.transferInformations = transferInformations;
       return this;
     }
 

@@ -1,8 +1,8 @@
 {
   "files": [
     {
-      "path": "dz-sherizi-api-sherizi-v1-rev20120818112953-1.7.2-beta-sources.jar", 
-      "type": "todo"
+      "path": "dz-sherizi-api-sherizi-v1-rev20120823201246-1.7.2-beta-sources.jar", 
+      "type": "source"
     }
   ], 
   "kind": "discovery#directoryItem", 
@@ -407,5 +407,5 @@
   ], 
   "language_version": "1.7.2-beta", 
   "id": "sherizi:v1", 
-  "revision": 20120818112953
+  "revision": 20120823201246
 }

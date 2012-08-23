@@ -144,20 +144,10 @@
   },
   "initiateTransfer": {
    "id": "sherizi.initiateTransfer",
-   "path": "initiateTransfer/{emailFrom}/{deviceFrom}/{emailTo}/{deviceTo}/{transferMode}",
+   "path": "initiateTransfer/{emailsFrom}/{emailTo}/{deviceTo}/{transferInformations}",
    "httpMethod": "POST",
    "parameters": {
-    "deviceFrom": {
-     "type": "string",
-     "required": true,
-     "location": "path"
-    },
     "deviceTo": {
-     "type": "string",
-     "required": true,
-     "location": "path"
-    },
-    "emailFrom": {
      "type": "string",
      "required": true,
      "location": "path"
@@ -167,18 +157,22 @@
      "required": true,
      "location": "path"
     },
-    "transferMode": {
+    "emailsFrom": {
+     "type": "string",
+     "required": true,
+     "location": "path"
+    },
+    "transferInformations": {
      "type": "string",
      "required": true,
      "location": "path"
     }
    },
    "parameterOrder": [
-    "emailFrom",
-    "deviceFrom",
+    "emailsFrom",
     "emailTo",
     "deviceTo",
-    "transferMode"
+    "transferInformations"
    ]
   },
   "saveOrUpdateUser": {

@@ -69,7 +69,7 @@ public class ContactService {
 				try {
 					users = SheriziServerService.getInstance().searchFriends(emails.toString()).execute();
 				} catch ( IOException e ) {
-					throw new SheriziException("An error occured while fetching Sherizi friends.");
+					throw new SheriziException("An error occured while fetching Sherizi friends : "+e.getMessage());
 				}
 				allUsers.addAll(users.getItems());
 				emails = new StringBuffer(1024);
@@ -89,7 +89,7 @@ public class ContactService {
 			try {
 				users = SheriziServerService.getInstance().searchFriends(emails.toString()).execute();
 			} catch ( IOException e ) {
-				throw new SheriziException("An error occured while fetching Sherizi friends.");
+				throw new SheriziException("An error occured while fetching Sherizi friends : "+e.getMessage());
 			}
 			allUsers.addAll(users.getItems());
 		}
@@ -118,6 +118,26 @@ public class ContactService {
 		result.add(new Email(googleAccount, Utils.GOOGLE_ACCOUNT_TYPE));
 
 		return result;
+	}
+
+	/**
+	 * Same as getConnectedUserEmails but in CSV
+	 * @param context
+	 * @return
+	 */
+	public String getConnectedUserEmailsCSV(Context context) {
+		Set<Email> emails = getConnectedUserEmails(context);
+		StringBuffer result = new StringBuffer();
+		boolean first = true;
+		for ( Email email : emails ) {
+			if ( first ) {
+				first = false;
+			} else {
+				result.append(",");
+			}
+			result.append(email.getEmail());
+		}
+		return result.toString();
 	}
 
 	/**

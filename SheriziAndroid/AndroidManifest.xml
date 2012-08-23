@@ -24,7 +24,9 @@
     <!-- GCM Registration on connectivity change -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     
-    <!-- uses-permission android:name="android.permission.VIBRATE"/ -->
+    <!-- Bluetooth activation and access -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <application android:icon="@drawable/sherizi" android:label="@string/app_name" android:theme="@style/AppTheme" android:name=".app.SheriziApplication">
         <!-- Main activity -->

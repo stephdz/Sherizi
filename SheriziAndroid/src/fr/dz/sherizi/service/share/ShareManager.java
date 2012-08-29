@@ -1,17 +1,33 @@
 package fr.dz.sherizi.service.share;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
+
 import android.content.Context;
 
 import com.appspot.api.services.sherizi.model.User;
 
 import fr.dz.sherizi.common.exception.SheriziException;
+import fr.dz.sherizi.common.message.Message;
 import fr.dz.sherizi.listener.SheriziActionListener;
+import fr.dz.sherizi.service.contact.ContactService;
+import fr.dz.sherizi.service.server.SheriziServerService;
 
 
 /**
  * Base class for sharing
  */
 public abstract class ShareManager {
+
+	// Constants
+	public static final String DEFAULT_SHARE_MANAGER = BluetoothShareManager.class.getSimpleName();
+	public static final String SHARE_MANAGER_PARAMETER = "shareManager";
+
+	// Share managers
+	public static Map<String,Class<?>> managers = initShareManagers();
 
 	// Context
 	private Context context;
@@ -25,6 +41,13 @@ public abstract class ShareManager {
 
 	// State
 	private boolean shareInProgess;
+
+	/**
+	 * Default constructor
+	 */
+	public ShareManager() {
+		this(null, null);
+	}
 
 	/**
 	 * Constructor
@@ -59,7 +82,28 @@ public abstract class ShareManager {
 	 * @return
 	 */
 	public static ShareManager getDefaultShareManager(Context context, SheriziActionListener listener) {
-		return new BluetoothShareManager(context, listener);
+		return getShareManager(DEFAULT_SHARE_MANAGER, context, listener);
+	}
+
+	/**
+	 * Returns a ShareManager by its name
+	 * @param name
+	 * @param context
+	 * @param listener
+	 * @return
+	 */
+	public static ShareManager getShareManager(String name, Context context, SheriziActionListener listener) {
+		ShareManager manager = null;
+		if ( managers.containsKey(name) ) {
+			try {
+				manager = (ShareManager) managers.get(name).newInstance();
+				manager.setContext(context);
+				manager.setListener(listener);
+			} catch (Throwable t) {
+				manager = null;
+			}
+		}
+		return manager;
 	}
 
 	/**
@@ -88,19 +132,21 @@ public abstract class ShareManager {
 	 * On prepare success, we initiate the transfer and start waiting
 	 */
 	protected void onPrepareSuccess() {
-		/*try {*/
-			doWait();
-			// TODO Initiate transfer
-			/*
+		try {
+			// Adds the manager used to the transfer informations
+			Message transferInformations = getTransferInformations();
+			transferInformations.addParameter(SHARE_MANAGER_PARAMETER, getClass().getSimpleName());
+
+			// Initiate the transfer
 			SheriziServerService.getInstance().initiateTransfer(
 				ContactService.getInstance().getConnectedUserEmailsCSV(context),
 				user.getEmail(),
 				user.getDeviceName(),
-				"");
-
+				transferInformations.toString());
+			doWait();
 		} catch (IOException e) {
 			onError(e);
-		}*/
+		}
 	}
 
 	/**
@@ -164,6 +210,32 @@ public abstract class ShareManager {
 	}
 
 	/**
+	 * Initializes the share managers list
+	 * @return
+	 */
+	protected static Map<String,Class<?>> initShareManagers() {
+		Map<String, Class<?>> result = new HashMap<String, Class<?>>();
+		result.put(BluetoothShareManager.class.getSimpleName(), BluetoothShareManager.class);
+		return result;
+	}
+
+	/**
+	 * TODO Sends the datas via an output stream
+	 * @param outputStream
+	 */
+	protected void sendDatas(OutputStream outputStream) {
+
+	}
+
+	/**
+	 * TODO Reads the datas via an input stream
+	 * @param inputStream
+	 */
+	protected void readDatas(InputStream inputStream) {
+
+	}
+
+	/**
 	 * Share initialization
 	 * @param listener Listener methods must be called in order to achieve sharing
 	 */
@@ -181,12 +253,28 @@ public abstract class ShareManager {
 	 */
 	protected abstract void release(SheriziActionListener listener);
 
+	/**
+	 * Returns share specific informations to provide from the server to the client to initiate the transfer
+	 * @return
+	 */
+	protected abstract Message getTransferInformations();
+
+	/**
+	 * Does the client side transfer : must connect to the server with the given transfer informations and read through an InputStream via readDatas()
+	 * @param listener Listener methods must be called in order to achieve sharing
+	 */
+	protected abstract void connectAndReceive(Message transferInformations, SheriziActionListener listener);
+
 	/*
 	 * GETTERS & SETTERS
 	 */
 
 	public Context getContext() {
 		return context;
+	}
+
+	private void setContext(Context context) {
+		this.context = context;
 	}
 
 	public boolean isShareInProgress() {
@@ -199,5 +287,9 @@ public abstract class ShareManager {
 
 	public User getUser() {
 		return user;
+	}
+
+	private void setListener(SheriziActionListener listener) {
+		this.listener = listener;
 	}
 }

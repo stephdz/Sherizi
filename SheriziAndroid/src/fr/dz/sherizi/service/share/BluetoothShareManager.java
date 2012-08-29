@@ -1,7 +1,12 @@
 package fr.dz.sherizi.service.share;
 
-import android.content.Context;
+import java.util.UUID;
+
+import android.bluetooth.BluetoothSocket;
+import fr.dz.sherizi.common.exception.SheriziException;
+import fr.dz.sherizi.common.message.Message;
 import fr.dz.sherizi.listener.SheriziActionListener;
+import fr.dz.sherizi.service.bluetooth.BluetoothServerListener;
 import fr.dz.sherizi.service.bluetooth.BluetoothService;
 
 
@@ -10,16 +15,19 @@ import fr.dz.sherizi.service.bluetooth.BluetoothService;
  */
 public class BluetoothShareManager extends ShareManager {
 
+	// Constants
+	public static final String SERVER_PARAMETER = "server";
+	public static final String SERVICE_NAME = "Sherizi Share";
+	public static final String SERVICE_UUID = new UUID(85321578123648764l, 1256874535484594l).toString();
+
 	// True if we must disable bluetooth on release
 	private boolean mustDisable;
 
 	/**
 	 * Constructor
-	 * @param context
-	 * @param listener
 	 */
-	public BluetoothShareManager(Context context, SheriziActionListener listener) {
-		super(context, listener);
+	public BluetoothShareManager() {
+
 	}
 
 	@Override
@@ -39,15 +47,34 @@ public class BluetoothShareManager extends ShareManager {
 	}
 
 	@Override
-	protected void waitAndShare(SheriziActionListener listener) {
-		// TODO Do sharing job
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			listener.onError(e);
-		}
-		listener.onInfo("Share done");
-		listener.onSuccess();
+	protected void waitAndShare(final SheriziActionListener listener) {
+		// Starts the server
+		BluetoothService.getInstance().startServer(SERVICE_NAME, SERVICE_UUID, new BluetoothServerListener() {
+
+			// When a client is connected, we send it datas and close the connection
+			public void onAccept(BluetoothSocket clientSocket) {
+				boolean sent = false;
+				try {
+					try {
+						sendDatas(clientSocket.getOutputStream());
+						sent = true;
+					} catch (Throwable t) {
+						onError(new SheriziException("Error while sending datas : "+t.getMessage()));
+					}
+					clientSocket.close();
+					if ( sent ) {
+						listener.onInfo("Datas sent");
+						listener.onSuccess();
+					}
+				} catch (Throwable t) {
+					onError(t);
+				}
+			}
+
+			public void onError(Throwable t) {
+				listener.onError(t);
+			}
+		});
 	}
 
 	@Override
@@ -66,5 +93,17 @@ public class BluetoothShareManager extends ShareManager {
 				}
 			});
 		}
+	}
+
+	@Override
+	protected Message getTransferInformations() {
+		Message message = new Message();
+		message.addParameter(SERVER_PARAMETER, BluetoothService.getInstance().getAddress());
+		return message;
+	}
+
+	@Override
+	protected void connectAndReceive(Message transferInformations, SheriziActionListener listener) {
+		// TODO Connect to the server and receive the datas
 	}
 }

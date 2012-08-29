@@ -1,5 +1,7 @@
 package fr.dz.sherizi.service.bluetooth;
 
+import java.util.UUID;
+
 import android.bluetooth.BluetoothAdapter;
 import fr.dz.sherizi.common.exception.SheriziException;
 import fr.dz.sherizi.listener.SheriziActionListener;
@@ -93,5 +95,36 @@ public class BluetoothService {
 			listener.onError(new SheriziException("No bluetooth adapter available"));
 			return false;
 		}
+	}
+
+	/**
+	 * Disables the bluetooth and when it's disabled, calls the SheriziActionListener
+	 * @param listener
+	 * @return true if it has really been disabled, false if bluetooth was already disabled
+	 */
+	public boolean startServer(String serviceName, String serviceUUID, final BluetoothServerListener listener) {
+		BluetoothAdapter manager = BluetoothAdapter.getDefaultAdapter();
+		if ( manager != null ) {
+			if ( manager.isEnabled() ) {
+				manager.disable();
+				BluetoothServerThread serverThread = new BluetoothServerThread(manager, listener, serviceName, UUID.fromString(serviceUUID));
+				serverThread.start();
+			} else {
+				listener.onError(new SheriziException("Enable bluetooth before starting a server"));
+				return false;
+			}
+			return true;
+		} else {
+			listener.onError(new SheriziException("No bluetooth adapter available"));
+			return false;
+		}
+	}
+
+	/**
+	 * Returns the device bluetooth adress
+	 * @return
+	 */
+	public String getAddress() {
+		return BluetoothAdapter.getDefaultAdapter().getAddress();
 	}
 }

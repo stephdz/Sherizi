@@ -27,7 +27,7 @@ public class BluetoothServerThread extends Thread {
 		try {
 			this.serverSocket = adapter.listenUsingRfcommWithServiceRecord(serviceName, serviceUUID);
 		} catch ( Throwable t ) {
-			listener.onError(new SheriziException("Unable to start bluetooth server : "+t.getMessage()));
+			listener.onError(new SheriziException("Unable to start bluetooth server", t));
 		}
 		this.listener = listener;
 		this.ended = Boolean.FALSE;
@@ -45,7 +45,7 @@ public class BluetoothServerThread extends Thread {
                 }
             } catch (Throwable t) {
             	if ( ! isEnded() ) {
-	                listener.onError(new SheriziException("Error while waiting for bluetooth client : "+t.getMessage()));
+	                listener.onError(new SheriziException("Error while waiting for bluetooth client", t));
 	                end();
             	}
             }
@@ -61,7 +61,7 @@ public class BluetoothServerThread extends Thread {
 			try {
 				serverSocket.close();
 			} catch (Throwable t) {
-				listener.onError(new SheriziException("Error while ending bluetooth server : "+t.getMessage()));
+				listener.onError(new SheriziException("Error while ending bluetooth server", t));
 			}
 		}
 	}

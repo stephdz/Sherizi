@@ -11,12 +11,13 @@ import fr.dz.sherizi.utils.Utils;
 public class NotificationReceiver implements PushMessageReceiver {
 
 	public static final String NOTIFICATION_TYPE = "notification";
+	public static final String MESSAGE_PARAMETER = "message";
 
 	public String getAcceptedMessageType() {
 		return NOTIFICATION_TYPE;
 	}
 
 	public void onMessage(Context context, PushMessage message) {
-		Utils.showMessage(context, message.getParameter("message"));
+		Utils.showNotification(context, message.getParameter(MESSAGE_PARAMETER));
 	}
 }

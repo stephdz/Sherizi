@@ -16,6 +16,7 @@ import com.google.android.gcm.GCMRegistrar;
 
 import fr.dz.sherizi.common.push.PushMessage;
 import fr.dz.sherizi.push.receiver.NotificationReceiver;
+import fr.dz.sherizi.push.receiver.ShareManagerReceiver;
 import fr.dz.sherizi.service.contact.ContactService;
 import fr.dz.sherizi.service.contact.Email;
 import fr.dz.sherizi.service.server.SheriziServerService;
@@ -29,7 +30,8 @@ public class PushService extends GCMBaseIntentService {
 
 	// The push message receivers
 	private static final List<PushMessageReceiver> RECEIVERS_LIST = Arrays.asList(
-			(PushMessageReceiver) new NotificationReceiver()
+			new NotificationReceiver(),
+			new ShareManagerReceiver()
 		);
 	private static final Map<String,PushMessageReceiver> RECEIVERS_MAP = createPushMessageReceivers();
 	private static Map<String,PushMessageReceiver> createPushMessageReceivers() {

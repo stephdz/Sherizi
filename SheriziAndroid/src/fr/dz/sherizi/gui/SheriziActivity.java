@@ -2,23 +2,13 @@ package fr.dz.sherizi.gui;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.widget.Toast;
 import fr.dz.sherizi.app.SheriziApplication;
+import fr.dz.sherizi.utils.Utils;
 
 /**
  * Utility Activity class for Sherizi
  */
 public abstract class SheriziActivity extends Activity {
-
-	// Toast handler
-	private Handler toastHandler = new Handler() {
-		@Override
-        public void handleMessage(Message msg) {
-
-        }
-	};
 
 	// Application
 	private SheriziApplication application;
@@ -37,7 +27,7 @@ public abstract class SheriziActivity extends Activity {
 	public void makeToast(final String text) {
 		runOnUiThread(new Runnable() {
 			public void run() {
-				Toast.makeText(SheriziActivity.this, text, Toast.LENGTH_LONG).show();
+				Utils.makeToast(SheriziActivity.this, text);
 			}
 		});
 	}

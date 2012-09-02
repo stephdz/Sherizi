@@ -27,6 +27,9 @@
     <!-- Bluetooth activation and access -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    
+    <!-- Save files on SD Card -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application android:icon="@drawable/sherizi" android:label="@string/app_name" android:theme="@style/AppTheme" android:name=".app.SheriziApplication">
         <!-- Main activity -->

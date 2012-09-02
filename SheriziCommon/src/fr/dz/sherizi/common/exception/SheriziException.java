@@ -11,4 +11,13 @@ public class SheriziException extends Exception {
 	public SheriziException(String message) {
 		super(message);
 	}
+
+	/**
+	 * Constructor
+	 * @param message
+	 * @param t
+	 */
+	public SheriziException(String message, Throwable t) {
+		super(message, t);
+	}
 }

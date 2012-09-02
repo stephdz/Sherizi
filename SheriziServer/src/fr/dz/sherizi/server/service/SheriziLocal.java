@@ -47,7 +47,7 @@ public class SheriziLocal {
 		User user = null;
 		try {
 			Query query = mgr.createQuery("select from "+User.class.getSimpleName()+" u "+
-					"where u."+User.EMAIL_FIELD+" = :emails "+
+					"where u."+User.EMAIL_FIELD+" = :email "+
 					"and u."+User.DEVICE_NAME_FIELD+" = :deviceName ");
 			query.setParameter("email", email);
 			query.setParameter("deviceName", deviceName);

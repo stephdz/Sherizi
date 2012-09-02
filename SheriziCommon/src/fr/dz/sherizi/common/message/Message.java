@@ -14,8 +14,15 @@ public class Message implements Serializable {
 
 	private static final long serialVersionUID = -5619739902326725183L;
 
+	// Constants
+	public static final String DEFAULT_ENCODING = "UTF-8";
+
 	// Parameters map
 	private Map<String,String> parameters = new HashMap<String,String>();
+
+	// Message size and string cache
+	private Long messageSize;
+	private String value;
 
 	/**
 	 * Default constructor
@@ -67,25 +74,50 @@ public class Message implements Serializable {
 		this.parameters = parameters;
 	}
 
-	/* Returns the Message string
+	/**
+	 * Returns the message size (in bytes) using default encoding
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
+	public long getMessageSize() throws UnsupportedEncodingException {
+		return getMessageSize(DEFAULT_ENCODING);
+	}
+
+	/**
+	 * Returns the message size (in bytes)
+	 * @param encoding
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
+	public long getMessageSize(String encoding) throws UnsupportedEncodingException {
+		initMessageCache(encoding);
+		return messageSize;
+	}
+
+	/* Same as toString but with DEFAULT_ENCODING
 	 * (non-Javadoc)
+	 * @see #toString(String)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		try {
-			StringBuffer buffer = new StringBuffer();
-			if ( parameters != null ) {
-				boolean first = true;
-				for ( String key : parameters.keySet() ) {
-					buffer.append((first?"":"&")+key+"="+URLEncoder.encode(parameters.get(key), "UTF-8"));
-					first = false;
-				}
-			}
-			return buffer.toString();
-		} catch ( UnsupportedEncodingException e ) {
+			return toString(DEFAULT_ENCODING);
+		} catch (UnsupportedEncodingException e) {
+			// Cannot append
 			return null;
 		}
+	}
+
+	/**
+	 * Serializes the message
+	 * @param encoding
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
+	public String toString(String encoding) throws UnsupportedEncodingException {
+		initMessageCache(encoding);
+		return value;
 	}
 
 	/**
@@ -120,5 +152,38 @@ public class Message implements Serializable {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * Internal serialization (using URL style)
+	 */
+	protected String internalToString() {
+		try {
+			StringBuffer buffer = new StringBuffer();
+			if ( parameters != null ) {
+				boolean first = true;
+				for ( String key : parameters.keySet() ) {
+					buffer.append((first?"":"&")+key+"="+URLEncoder.encode(parameters.get(key), "UTF-8"));
+					first = false;
+				}
+			}
+			return buffer.toString();
+		} catch ( UnsupportedEncodingException e ) {
+			return null;
+		}
+	}
+
+	/**
+	 * Initializes the cache (serialized message and message size)
+	 * @param encoding
+	 * @throws UnsupportedEncodingException
+	 */
+	protected void initMessageCache(String encoding) throws UnsupportedEncodingException {
+		if ( value == null ) {
+			this.value = internalToString();
+		}
+		if ( messageSize == null ) {
+			this.messageSize = (long) value.getBytes(encoding).length;
+		}
 	}
 }

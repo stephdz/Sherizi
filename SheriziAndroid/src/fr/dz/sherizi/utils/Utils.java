@@ -1,5 +1,10 @@
 package fr.dz.sherizi.utils;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Notification;
@@ -9,8 +14,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.os.Environment;
 import android.support.v4.app.NotificationCompat;
+import android.widget.Toast;
 import fr.dz.sherizi.R;
+import fr.dz.sherizi.common.exception.SheriziException;
 import fr.dz.sherizi.gui.HomeActivity;
 
 /**
@@ -23,13 +31,14 @@ public class Utils {
 
 	// Constants
 	public static final String GOOGLE_ACCOUNT_TYPE = "com.google";
+	public static final String SHERIZI_FOLDER_NAME = "Sherizi";
 
 	/**
-	 * Shows an alert dialog with the given message.
+	 * Shows a notification with the given message.
 	 * @param context context
 	 * @param message message to show or {@code null} for none
 	 */
-	public static void showMessage(final Context context, String message) {
+	public static void showNotification(final Context context, String message) {
 		NotificationManager notificationManager = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -57,6 +66,13 @@ public class Utils {
 	}
 
 	/**
+	 * Displays a toast from any thread
+	 */
+	public static void makeToast(Context context, final String text) {
+		Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+	}
+
+	/**
 	 * Gets the main google account of the device
 	 * @param context
 	 * @return
@@ -81,5 +97,30 @@ public class Utils {
 	 */
 	public static String getDeviceName(Context context) {
 		return Build.MODEL;
+	}
+
+	/**
+	 * Returns the sherizi folder
+	 * @return
+	 */
+	public static File getSheriziFolder() {
+		String fullFolderName = Environment.getExternalStorageDirectory().toString()+File.separator+SHERIZI_FOLDER_NAME;
+		File file = new File(fullFolderName);
+		file.mkdirs();
+		return file;
+	}
+
+	/**
+	 * Returns the Sherizi folder
+	 * @param filename
+	 * @return
+	 */
+	public static OutputStream openFileOutput(String filename) throws SheriziException {
+		try {
+			File file = new File(getSheriziFolder(), filename);
+			return new BufferedOutputStream(new FileOutputStream(file));
+		} catch(Throwable t) {
+			throw new SheriziException("Error while opening file output", t);
+		}
 	}
 }

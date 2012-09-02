@@ -1,5 +1,6 @@
 package fr.dz.sherizi.gui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import com.appspot.api.services.sherizi.model.User;
 
 import fr.dz.sherizi.R;
+import fr.dz.sherizi.common.exception.SheriziException;
 import fr.dz.sherizi.gui.PullToRefreshListView.OnRefreshListener;
 import fr.dz.sherizi.gui.adapter.ContactAdapter;
 import fr.dz.sherizi.listener.SheriziActionListener;
@@ -34,7 +36,7 @@ public class FriendsActivity extends SheriziActivity {
 	};
 
 	// Datas describing what to share
-	private SharedData<?> shared;
+	private SharedData shared;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -82,25 +84,35 @@ public class FriendsActivity extends SheriziActivity {
 	protected void prepareSharing() {
 		Intent intent = getIntent();
 	    Bundle extras = intent.getExtras();
-	    if ( extras != null ) {
-		    if ( extras.containsKey(Intent.EXTRA_STREAM) ) {
-	            shared = new SharedData<Uri>((Uri) extras.getParcelable(Intent.EXTRA_STREAM));
-	            makeToast("Sharing URI : "+shared.getData()+" !");
-		    } else if ( extras.containsKey(Intent.EXTRA_TEXT) ) {
-		    	String text = intent.getStringExtra(Intent.EXTRA_TEXT);
-		    	if ( text == null || text.isEmpty() ) {
-		    		text = intent.getStringExtra(Intent.EXTRA_SUBJECT);
-		    	}
-		    	shared = new SharedData<String>(text);
-		    	makeToast("Sharing text : "+shared.getData()+" !");
-	        } else {
-	        	// TODO Manage the other sharing types
-	        	makeToast("Sharing unknown type !");
-	        }
-	    } else {
-	    	// Must not append
-	    	makeToast("Not sharing anything !");
-	    }
+	    try {
+		    if ( extras != null ) {
+			    if ( extras.containsKey(Intent.EXTRA_STREAM) ) {
+			    	Uri uri = (Uri) extras.getParcelable(Intent.EXTRA_STREAM);
+			    	String type = intent.getType();
+		            shared = new SharedData(this, uri, type);
+		            makeToast("Sharing URI : "+shared.getUri()+" !");
+			    } else if ( extras.containsKey(Intent.EXTRA_TEXT) ) {
+			    	String text = intent.getStringExtra(Intent.EXTRA_TEXT);
+			    	if ( text == null || text.isEmpty() ) {
+			    		text = intent.getStringExtra(Intent.EXTRA_SUBJECT);
+			    	}
+			    	shared = new SharedData(text);
+			    	makeToast("Sharing text : "+shared.getText()+" !");
+		        } else {
+		        	// TODO Manage the other sharing types
+		        	makeToast("Sharing unknown type !");
+		        }
+		    } else {
+		    	// Must not append
+		    	//makeToast("Not sharing anything !");
+		    	Uri uri = Uri.parse("content://media/external/images/media/1160");
+		    	String type = "image/jpg";
+	            shared = new SharedData(this, uri, type);
+	            makeToast("Sharing URI : "+shared.getUri()+" !");
+		    }
+	    } catch (SheriziException e) {
+    		makeToast("Error while preparing to share : "+e.getMessage());
+    	}
 	}
 
 	/**
@@ -122,11 +134,14 @@ public class FriendsActivity extends SheriziActivity {
 	 * @param contact
 	 */
 	protected void share(Contact contact) {
-		contactsList.setTextRefreshing("Activation du bluetooth");
+		contactsList.setTextRefreshing("Activation du bluetooth"); // TODO Change refreshing message on listener info
 		contactsList.setRefreshing();
 
 		// Activating bluetooth
-		ShareManager shareManager = ShareManager.getDefaultShareManager(this, new SheriziActionListener() {
+		ShareManager shareManager = ShareManager.getDefaultShareManager(this);
+
+		// TODO Get the user from a device (and give the choice to the user)
+		shareManager.share(shared, new ArrayList<User>(contact.getUsers()).get(0), new SheriziActionListener() {
 			@Override
 			public void onSuccess() {
 				runOnUiThread(new Runnable() {
@@ -135,17 +150,16 @@ public class FriendsActivity extends SheriziActivity {
 					}
 				});
 			}
+
 			@Override
 			public void onError(Throwable t) {
 				makeToast("Error during share : "+t.getMessage());
 			}
+
 			@Override
 			public void onInfo(Object information) {
 				makeToast((String) information);
 			}
 		});
-
-		// TODO Get the user from a device (and give the choice to the user)
-		shareManager.share(shared, new User());
 	}
 }

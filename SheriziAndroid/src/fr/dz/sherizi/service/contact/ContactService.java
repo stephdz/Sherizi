@@ -69,7 +69,7 @@ public class ContactService {
 				try {
 					users = SheriziServerService.getInstance().searchFriends(emails.toString()).execute();
 				} catch ( IOException e ) {
-					throw new SheriziException("An error occured while fetching Sherizi friends : "+e.getMessage());
+					throw new SheriziException("An error occured while fetching Sherizi friends", e);
 				}
 				allUsers.addAll(users.getItems());
 				emails = new StringBuffer(1024);
@@ -89,7 +89,7 @@ public class ContactService {
 			try {
 				users = SheriziServerService.getInstance().searchFriends(emails.toString()).execute();
 			} catch ( IOException e ) {
-				throw new SheriziException("An error occured while fetching Sherizi friends : "+e.getMessage());
+				throw new SheriziException("An error occured while fetching Sherizi friends", e);
 			}
 			allUsers.addAll(users.getItems());
 		}

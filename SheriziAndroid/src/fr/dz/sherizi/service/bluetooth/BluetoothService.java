@@ -3,6 +3,7 @@ package fr.dz.sherizi.service.bluetooth;
 import java.util.UUID;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import fr.dz.sherizi.common.exception.SheriziException;
 import fr.dz.sherizi.listener.SheriziActionListener;
 
@@ -98,15 +99,16 @@ public class BluetoothService {
 	}
 
 	/**
-	 * Disables the bluetooth and when it's disabled, calls the SheriziActionListener
+	 * Starts a bluetooth server with the given parameters
+	 * @param serviceName
+	 * @param serviceUUID
 	 * @param listener
-	 * @return true if it has really been disabled, false if bluetooth was already disabled
+	 * @return true if it has really started, false if not
 	 */
 	public boolean startServer(String serviceName, String serviceUUID, final BluetoothServerListener listener) {
 		BluetoothAdapter manager = BluetoothAdapter.getDefaultAdapter();
 		if ( manager != null ) {
 			if ( manager.isEnabled() ) {
-				manager.disable();
 				BluetoothServerThread serverThread = new BluetoothServerThread(manager, listener, serviceName, UUID.fromString(serviceUUID));
 				serverThread.start();
 			} else {
@@ -117,6 +119,34 @@ public class BluetoothService {
 		} else {
 			listener.onError(new SheriziException("No bluetooth adapter available"));
 			return false;
+		}
+	}
+
+	/**
+	 * Starts a bluetooth client with the given parameters
+	 * @param serverAddress
+	 * @param serviceUUID
+	 * @param listener
+	 * @return true if it has really started, false if not
+	 */
+	public boolean startClient(String serverAddress, String serviceUUID, final BluetoothClientListener listener) {
+		BluetoothAdapter manager = BluetoothAdapter.getDefaultAdapter();
+		BluetoothDevice server = manager != null ? manager.getRemoteDevice(serverAddress) : null;
+		if ( manager == null ) {
+			listener.onError(new SheriziException("No bluetooth adapter available"));
+			return false;
+		} else if ( server == null ) {
+			listener.onError(new SheriziException("Unknown bluetooth server address : "+serverAddress));
+			return false;
+		} else {
+			if ( manager.isEnabled() ) {
+				BluetoothClientThread clientThread = new BluetoothClientThread(manager, listener, server, UUID.fromString(serviceUUID));
+				clientThread.start();
+			} else {
+				listener.onError(new SheriziException("Enable bluetooth before starting a client"));
+				return false;
+			}
+			return true;
 		}
 	}
 

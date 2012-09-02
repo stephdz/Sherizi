@@ -14,6 +14,7 @@ import com.appspot.api.services.sherizi.model.User;
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
 
+import fr.dz.sherizi.app.SheriziApplication;
 import fr.dz.sherizi.common.push.PushMessage;
 import fr.dz.sherizi.push.receiver.NotificationReceiver;
 import fr.dz.sherizi.push.receiver.ShareManagerReceiver;
@@ -69,7 +70,7 @@ public class PushService extends GCMBaseIntentService {
 	public void onMessage(Context context, Intent intent) {
 		PushMessage message = PushMessage.valueOf(intent.getStringExtra("message"));
 		if ( RECEIVERS_MAP.containsKey(message.getType()) ) {
-			RECEIVERS_MAP.get(message.getType()).onMessage(context, message);
+			RECEIVERS_MAP.get(message.getType()).onMessage((SheriziApplication)getApplication(), message);
 		} else {
 			// TODO Show a warning or log something
 		}

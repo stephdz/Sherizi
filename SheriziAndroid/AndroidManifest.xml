@@ -39,6 +39,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        
         <!-- Search for a friend to share activity -->
         <activity android:label="@string/app_name" android:name=".gui.FriendsActivity">
             <intent-filter>
@@ -53,6 +54,10 @@
 			    <data android:mimeType="video/*" />
             </intent-filter>
         </activity>
+        
+        <!-- Incoming transfer activity -->
+        <activity android:label="@string/app_name" android:name=".gui.IncomingTransferActivity" />
+        
         <!-- Push management -->
         <service android:name=".push.PushService" android:enabled="true" />
         <receiver android:name=".push.PushReceiver" android:permission="com.google.android.c2dm.permission.SEND">
@@ -65,6 +70,7 @@
                 <category android:name="fr.dz.sherizi"/>
             </intent-filter>
         </receiver>
+        
         <!-- GCM registration at connectivity change -->
         <receiver android:name=".boot.BootReceiver" android:exported="false">
             <intent-filter>

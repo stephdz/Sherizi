@@ -23,4 +23,12 @@ public abstract class SheriziActionListener {
 	public void onInfo(Object information) {
 
 	}
+
+	/**
+	 * Called when action progress changes
+	 * @param percentage
+	 */
+	public void onProgress(Integer percentage) {
+
+	}
 }

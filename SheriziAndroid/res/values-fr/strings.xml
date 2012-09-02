@@ -6,4 +6,7 @@
     <string name="contact_description_start">Connecté sur</string>
     <string name="contact_description_end"></string>
     <string name="no_result">Aucun résultat</string>
+    <string name="accept_transfer">Quelqu\'un veut partager quelque chose avec vous. Acceptez-vous le transfert ?</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
 </resources>

@@ -16,6 +16,9 @@ public class BluetoothService {
 	// Contact Service instance
 	private static final BluetoothService instance = new BluetoothService();
 
+	// The bluetooth default adapter must be retrived from the main thread...
+	private BluetoothAdapter manager;
+
 	/**
 	 * Private constructor : it's a singleton
 	 */
@@ -36,7 +39,6 @@ public class BluetoothService {
 	 * @return true if it has really been enabled, false if bluetooth was already enabled
 	 */
 	public boolean enableBluetooth(final SheriziActionListener listener) {
-		BluetoothAdapter manager = BluetoothAdapter.getDefaultAdapter();
 		if ( manager != null ) {
 			boolean bluetoothEnabled = manager.isEnabled();
 			if ( ! bluetoothEnabled ) {
@@ -70,7 +72,6 @@ public class BluetoothService {
 	 * @return true if it has really been disabled, false if bluetooth was already disabled
 	 */
 	public boolean disableBluetooth(final SheriziActionListener listener) {
-		BluetoothAdapter manager = BluetoothAdapter.getDefaultAdapter();
 		if ( manager != null ) {
 			boolean bluetoothEnabled = manager.isEnabled();
 			if ( bluetoothEnabled ) {
@@ -106,7 +107,6 @@ public class BluetoothService {
 	 * @return true if it has really started, false if not
 	 */
 	public boolean startServer(String serviceName, String serviceUUID, final BluetoothServerListener listener) {
-		BluetoothAdapter manager = BluetoothAdapter.getDefaultAdapter();
 		if ( manager != null ) {
 			if ( manager.isEnabled() ) {
 				BluetoothServerThread serverThread = new BluetoothServerThread(manager, listener, serviceName, UUID.fromString(serviceUUID));
@@ -130,7 +130,6 @@ public class BluetoothService {
 	 * @return true if it has really started, false if not
 	 */
 	public boolean startClient(String serverAddress, String serviceUUID, final BluetoothClientListener listener) {
-		BluetoothAdapter manager = BluetoothAdapter.getDefaultAdapter();
 		BluetoothDevice server = manager != null ? manager.getRemoteDevice(serverAddress) : null;
 		if ( manager == null ) {
 			listener.onError(new SheriziException("No bluetooth adapter available"));
@@ -155,6 +154,14 @@ public class BluetoothService {
 	 * @return
 	 */
 	public String getAddress() {
-		return BluetoothAdapter.getDefaultAdapter().getAddress();
+		return manager.getAddress();
+	}
+
+	/**
+	 * Initializes the default adapter
+	 * @return
+	 */
+	public void initDefaultAdapter() {
+		this.manager = BluetoothAdapter.getDefaultAdapter();
 	}
 }

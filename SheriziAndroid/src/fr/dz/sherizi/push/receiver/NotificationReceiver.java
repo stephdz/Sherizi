@@ -1,6 +1,6 @@
 package fr.dz.sherizi.push.receiver;
 
-import android.content.Context;
+import fr.dz.sherizi.app.SheriziApplication;
 import fr.dz.sherizi.common.push.PushMessage;
 import fr.dz.sherizi.push.PushMessageReceiver;
 import fr.dz.sherizi.utils.Utils;
@@ -17,7 +17,7 @@ public class NotificationReceiver implements PushMessageReceiver {
 		return NOTIFICATION_TYPE;
 	}
 
-	public void onMessage(Context context, PushMessage message) {
-		Utils.showNotification(context, message.getParameter(MESSAGE_PARAMETER));
+	public void onMessage(SheriziApplication application, PushMessage message) {
+		Utils.showNotification(application, message.getParameter(MESSAGE_PARAMETER));
 	}
 }

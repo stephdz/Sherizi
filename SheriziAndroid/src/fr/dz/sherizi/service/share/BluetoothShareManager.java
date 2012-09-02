@@ -2,7 +2,6 @@ package fr.dz.sherizi.service.share;
 
 import android.bluetooth.BluetoothSocket;
 import fr.dz.sherizi.common.exception.SheriziException;
-import fr.dz.sherizi.common.message.Message;
 import fr.dz.sherizi.listener.SheriziActionListener;
 import fr.dz.sherizi.service.bluetooth.BluetoothClientListener;
 import fr.dz.sherizi.service.bluetooth.BluetoothServerListener;
@@ -32,18 +31,10 @@ public class BluetoothShareManager extends ShareManager {
 
 	@Override
 	protected void prepare(final SheriziActionListener listener) {
-		this.mustDisable = BluetoothService.getInstance().enableBluetooth(new SheriziActionListener() {
-			@Override
-			public void onSuccess() {
-				listener.onInfo("Bluetooth enabled");
-				listener.onSuccess();
-			}
-
-			@Override
-			public void onError(Throwable t) {
-				listener.onError(t);
-			}
-		});
+		this.mustDisable = BluetoothService.getInstance().enableBluetooth(listener);
+		if ( mustDisable ) {
+			listener.onInfo("Enabling bluetooth");
+		}
 	}
 
 	@Override
@@ -57,7 +48,7 @@ public class BluetoothShareManager extends ShareManager {
 				try {
 					// Sends the datas
 					try {
-						sendDatas(clientSocket.getOutputStream());
+						sendDatas(clientSocket.getOutputStream(), listener);
 						sent = true;
 					} catch (Throwable t) {
 						onError(new SheriziException("Error while sending datas", t));
@@ -69,7 +60,6 @@ public class BluetoothShareManager extends ShareManager {
 					// Closes the connection
 					clientSocket.close();
 					if ( sent ) {
-						listener.onInfo("Datas sent");
 						listener.onSuccess();
 					}
 				} catch (Throwable t) {
@@ -89,7 +79,6 @@ public class BluetoothShareManager extends ShareManager {
 			BluetoothService.getInstance().disableBluetooth(new SheriziActionListener() {
 				@Override
 				public void onSuccess() {
-					listener.onInfo("Bluetooth disabled");
 					listener.onSuccess();
 				}
 
@@ -98,21 +87,22 @@ public class BluetoothShareManager extends ShareManager {
 					listener.onError(t);
 				}
 			});
+			listener.onInfo("Disabling bluetooth");
 		} else {
 			listener.onSuccess();
 		}
 	}
 
 	@Override
-	protected Message getTransferInformationsForClient() {
-		Message message = new Message();
-		message.addParameter(SERVER_PARAMETER, BluetoothService.getInstance().getAddress());
-		return message;
+	protected TransferInformations getTransferInformationsForClient() {
+		TransferInformations result = new TransferInformations();
+		result.setServer(BluetoothService.getInstance().getAddress());
+		return result;
 	}
 
 	@Override
-	protected void connectAndReceive(Message transferInformations, final SheriziActionListener listener) {
-		String serverAddress = transferInformations.getParameter(SERVER_PARAMETER);
+	protected void connectAndReceive(TransferInformations transferInformations, final SheriziActionListener listener) {
+		String serverAddress = transferInformations.getServer();
 		if ( serverAddress != null && ! serverAddress.isEmpty() ) {
 			BluetoothService.getInstance().startClient(serverAddress, SERVICE_UUID, new BluetoothClientListener() {
 				public void onConnect(BluetoothSocket socket) {
@@ -120,7 +110,7 @@ public class BluetoothShareManager extends ShareManager {
 						// Reads the datas
 						boolean received = false;
 						try {
-							readDatas(socket.getInputStream());
+							readDatas(socket.getInputStream(), listener);
 							received = true;
 						} catch (Throwable t) {
 							onError(new SheriziException("Error while receiving datas", t));
@@ -132,7 +122,6 @@ public class BluetoothShareManager extends ShareManager {
 						// Closes the connection
 						socket.close();
 						if ( received ) {
-							listener.onInfo("Datas received");
 							listener.onSuccess();
 						}
 					} catch (Throwable t ) {

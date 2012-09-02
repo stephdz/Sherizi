@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,6 +20,7 @@ import fr.dz.sherizi.common.exception.SheriziException;
 import fr.dz.sherizi.gui.PullToRefreshListView.OnRefreshListener;
 import fr.dz.sherizi.gui.adapter.ContactAdapter;
 import fr.dz.sherizi.listener.SheriziActionListener;
+import fr.dz.sherizi.service.bluetooth.BluetoothService;
 import fr.dz.sherizi.service.contact.Contact;
 import fr.dz.sherizi.service.share.ShareManager;
 import fr.dz.sherizi.service.share.SharedData;
@@ -113,6 +115,9 @@ public class FriendsActivity extends SheriziActivity {
 	    } catch (SheriziException e) {
     		makeToast("Error while preparing to share : "+e.getMessage());
     	}
+
+	    // Init the bluetooth service
+	    BluetoothService.getInstance().initDefaultAdapter();
 	}
 
 	/**
@@ -133,15 +138,33 @@ public class FriendsActivity extends SheriziActivity {
 	 * Share datas to the contact
 	 * @param contact
 	 */
-	protected void share(Contact contact) {
-		contactsList.setTextRefreshing("Activation du bluetooth"); // TODO Change refreshing message on listener info
+	protected void share(final Contact contact) {
+		contactsList.setTextRefreshing("Initializing share action"); // TODO Change refreshing message on listener info
 		contactsList.setRefreshing();
 
-		// Activating bluetooth
-		ShareManager shareManager = ShareManager.getDefaultShareManager(this);
+		// Gets the default share manager
+		final ShareManager shareManager = ShareManager.getDefaultShareManager(this);
 
+		// Does the sharing job in background
+		new AsyncTask<Void, Void, Void>() {
+			@Override
+			protected Void doInBackground(Void... params) {
+				doShare(shareManager, contact);
+				return null;
+			}
+		}.execute();
+	}
+
+	/**
+	 * Does the final sharing job
+	 * @param shareManager
+	 * @param contact
+	 */
+	protected void doShare(ShareManager shareManager, Contact contact) {
 		// TODO Get the user from a device (and give the choice to the user)
 		shareManager.share(shared, new ArrayList<User>(contact.getUsers()).get(0), new SheriziActionListener() {
+			private String step;
+
 			@Override
 			public void onSuccess() {
 				runOnUiThread(new Runnable() {
@@ -152,13 +175,32 @@ public class FriendsActivity extends SheriziActivity {
 			}
 
 			@Override
-			public void onError(Throwable t) {
-				makeToast("Error during share : "+t.getMessage());
+			public void onError(final Throwable t) {
+				runOnUiThread(new Runnable() {
+					public void run() {
+						makeToast("Error during share : "+t.getMessage());
+					}
+				});
+
 			}
 
 			@Override
 			public void onInfo(Object information) {
-				makeToast((String) information);
+				this.step = (String) information;
+				runOnUiThread(new Runnable() {
+					public void run() {
+						contactsList.setTextRefreshing(step);
+					}
+				});
+			}
+
+			@Override
+			public void onProgress(final Integer percentage) {
+				runOnUiThread(new Runnable() {
+					public void run() {
+						contactsList.setTextRefreshing(step+" : "+percentage+"%");
+					}
+				});
 			}
 		});
 	}

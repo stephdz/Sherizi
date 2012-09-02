@@ -6,4 +6,7 @@
     <string name="contact_description_start">Connected on</string>
     <string name="contact_description_end"></string>
     <string name="no_result">No result found</string>
+    <string name="accept_transfer">Someone wants to share something with you. Do you accept the transfer ?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

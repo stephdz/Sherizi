@@ -32,19 +32,22 @@ public class Utils {
 	// Constants
 	public static final String GOOGLE_ACCOUNT_TYPE = "com.google";
 	public static final String SHERIZI_FOLDER_NAME = "Sherizi";
+	public static final String EXTRA_ID = "selected_id";
 
 	/**
 	 * Shows a notification with the given message.
-	 * @param context context
-	 * @param message message to show or {@code null} for none
+	 * @param context
+	 * @param message
+	 * @param activityClass
+	 * @param id
 	 */
-	public static void showNotification(final Context context, String message) {
+	public static void showNotification(final Context context, String message, Class<?> activityClass, int id) {
 		NotificationManager notificationManager = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 
 		// Definition de la redirection au moment du clique sur la notification.
 		// Dans notre cas la notification redirige vers notre application
-		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,	new Intent(context, HomeActivity.class), 0);
+		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,	new Intent(context, activityClass).putExtra(EXTRA_ID, id), 0);
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
@@ -56,6 +59,7 @@ public class Utils {
 				.setAutoCancel(true)
 				.setContentTitle(context.getResources().getString(R.string.app_name))
 				.setContentText(message);
+
 		Notification notification = builder.getNotification();
 		notification.defaults |= Notification.DEFAULT_SOUND;
 		notification.defaults |= Notification.DEFAULT_LIGHTS;
@@ -63,6 +67,15 @@ public class Utils {
 
 		// Notification
 		notificationManager.notify(1, notification);
+	}
+
+	/**
+	 * Shows a notification without action listener
+	 * @param context
+	 * @param message
+	 */
+	public static void showNotification(Context context, String message) {
+		showNotification(context, message, HomeActivity.class, 1);
 	}
 
 	/**

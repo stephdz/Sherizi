@@ -1,6 +1,6 @@
 package fr.dz.sherizi.push;
 
-import android.content.Context;
+import fr.dz.sherizi.app.SheriziApplication;
 import fr.dz.sherizi.common.push.PushMessage;
 
 /**
@@ -18,8 +18,8 @@ public interface PushMessageReceiver {
 
 	/**
 	 * Called when an accepted message arrives
-	 * @param context
+	 * @param application
 	 * @param message
 	 */
-	public void onMessage(Context context, PushMessage message);
+	public void onMessage(SheriziApplication application, PushMessage message);
 }
